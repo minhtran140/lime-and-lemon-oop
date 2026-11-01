@@ -1,0 +1,12 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- Mỗi lần deploy có một phiên bản asset: deploy lại thì application scope bị reset, nên trình duyệt tải CSS/JS mới
+     thay vì dùng bản cache cũ (Tomcat không gửi Cache-Control cho file tĩnh). --%>
+<c:if test="${empty applicationScope.assetVersion}"><jsp:useBean id="assetClock" class="java.util.Date"/><c:set var="assetVersion" scope="application" value="${assetClock.time}"/></c:if>
+<meta name="color-scheme" content="only light">
+<%-- Nơi duy nhất đặt cờ JS: CSS phân biệt được "script sẽ chạy" với "không có script" ngay trước lần vẽ đầu tiên. --%>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/Newsreader-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/Newsreader-vietnamese.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/assets/favicon.svg">

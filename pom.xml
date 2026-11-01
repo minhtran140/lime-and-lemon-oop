@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion><groupId>com.clothingstore</groupId><artifactId>lime-and-lemon</artifactId><version>1.0.0-SNAPSHOT</version><packaging>war</packaging>
+  <name>Lime &amp; Lemon</name><properties>
+    <maven.compiler.release>21</maven.compiler.release><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding><project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jakarta.servlet.version>6.0.0</jakarta.servlet.version><jakarta.tags.version>3.0.2</jakarta.tags.version><jakarta.tags.impl.version>3.0.1</jakarta.tags.impl.version><postgresql.driver.version>42.7.14</postgresql.driver.version>
+  </properties><dependencies>
+    <dependency><groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId><version>${jakarta.servlet.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>jakarta.servlet.jsp.jstl</groupId><artifactId>jakarta.servlet.jsp.jstl-api</artifactId><version>${jakarta.tags.version}</version>
+      <exclusions><exclusion><groupId>jakarta.el</groupId><artifactId>jakarta.el-api</artifactId></exclusion></exclusions>
+    </dependency>
+    <dependency><groupId>org.glassfish.web</groupId><artifactId>jakarta.servlet.jsp.jstl</artifactId><version>${jakarta.tags.impl.version}</version>
+      <exclusions><exclusion><groupId>jakarta.el</groupId><artifactId>jakarta.el-api</artifactId></exclusion></exclusions>
+    </dependency>
+    <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><version>${postgresql.driver.version}</version><scope>runtime</scope></dependency>
+    <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version><scope>test</scope></dependency>
+  </dependencies><build><finalName>ROOT</finalName><plugins>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version><configuration><release>${maven.compiler.release}</release><encoding>${project.build.sourceEncoding}</encoding></configuration></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-war-plugin</artifactId><version>3.4.0</version></plugin>
+    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.4</version></plugin>
+  </plugins></build></project>

@@ -1,0 +1,210 @@
+/* Đăng nhập và đăng ký: trang kể chuyện cạnh biểu mẫu, thu gọn thành một thẻ trên màn nhỏ. */
+
+.account-page {
+    width: min(980px, calc(100% - 48px));
+    max-width: 980px;
+    margin: var(--spacing-2xl) auto var(--spacing-4xl);
+}
+
+.account-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+    align-items: stretch;
+    gap: clamp(20px, 4vw, 40px);
+}
+
+.account-story {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 580px;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-md);
+    padding: clamp(24px, 4vw, 44px);
+    background: var(--color-canvas);
+}
+
+.account-story-watermark {
+    position: absolute;
+    z-index: 0;
+    right: -36px;
+    bottom: -78px;
+    pointer-events: none;
+    width: clamp(220px, 30vw, 360px);
+    height: clamp(220px, 30vw, 360px);
+    color: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.account-story-watermark .logo-leaf {
+    fill: currentColor;
+}
+
+.account-story-brand,
+.account-story-copy,
+.account-story-link {
+    position: relative;
+    z-index: 1;
+}
+
+.account-story-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-heading);
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.account-story-mark {
+    display: block;
+    width: 34px;
+    height: 34px;
+    color: var(--color-accent);
+}
+
+.account-story-copy {
+    max-width: 34rem;
+    margin: auto 0;
+    padding: var(--spacing-2xl) 0;
+}
+
+.account-story-kicker {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+}
+
+/* Dòng thương hiệu cạnh biểu mẫu chỉ là một đoạn văn có tạo kiểu: h1 của biểu mẫu mới là tiêu đề lớn nhất trang. */
+.account-story-line {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-heading);
+    font-family: var(--font-serif);
+    font-size: var(--text-title);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.account-story-copy > p:last-child {
+    max-width: 38ch;
+    margin-bottom: 0;
+    color: var(--color-text-muted);
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+.account-story-link {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 44px;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-accent);
+    font-weight: 600;
+    text-underline-offset: 4px;
+}
+
+.account-story-link:hover {
+    color: var(--color-accent-hover);
+}
+
+.account-card {
+    width: 100%;
+    align-self: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-md);
+    padding: clamp(24px, 4vw, 44px);
+    background: var(--color-surface);
+}
+
+.account-mark {
+    display: block;
+    width: 44px;
+    height: 44px;
+    color: var(--color-accent);
+}
+
+.account-card h1 {
+    margin: var(--spacing-md) 0 var(--spacing-xxs);
+}
+
+.account-lead {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-muted);
+    font-size: var(--text-label);
+    line-height: 1.5;
+}
+
+.account-page .form-error-summary {
+    margin-bottom: var(--spacing-lg);
+}
+
+.account-form {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.account-form input {
+    min-height: 44px;
+    padding-inline: var(--spacing-sm);
+    font-size: 16px;
+}
+
+.account-form .field-hint {
+    color: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.account-form button {
+    width: 100%;
+    margin-top: var(--spacing-xs);
+}
+
+.account-switch {
+    margin: var(--spacing-lg) 0 0;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-md);
+    color: var(--color-text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.account-switch a {
+    color: var(--color-heading);
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .account-page {
+        width: min(520px, calc(100% - 32px));
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-3xl);
+    }
+
+    .account-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .account-story {
+        display: none;
+    }
+
+    .account-card {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+}
+
+@media (min-width: 769px) {
+    /* Biểu mẫu đứng trước trong DOM; khung kể chuyện vẫn nằm bên trái nó. */
+    .account-story {
+        order: -1;
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0">
+ <display-name>Lime &amp; Lemon</display-name>
+ <request-character-encoding>UTF-8</request-character-encoding>
+ <response-character-encoding>UTF-8</response-character-encoding>
+ <filter><filter-name>applicationErrorFilter</filter-name><filter-class>com.clothingstore.web.filter.ApplicationErrorFilter</filter-class></filter>
+ <filter><filter-name>sameOriginFilter</filter-name><filter-class>com.clothingstore.web.filter.SameOriginFilter</filter-class></filter>
+ <filter><filter-name>authorizationFilter</filter-name><filter-class>com.clothingstore.web.filter.AuthorizationFilter</filter-class></filter>
+ <filter-mapping><filter-name>applicationErrorFilter</filter-name><url-pattern>/*</url-pattern></filter-mapping>
+ <filter-mapping><filter-name>sameOriginFilter</filter-name><url-pattern>/*</url-pattern></filter-mapping>
+ <filter-mapping><filter-name>authorizationFilter</filter-name><url-pattern>/checkout</url-pattern><url-pattern>/orders</url-pattern><url-pattern>/orders/*</url-pattern><url-pattern>/admin/*</url-pattern></filter-mapping>
+ <!-- Cache trình duyệt cho /assets/*. Các trang link CSS/JS dạng ?v=<thời điểm deploy> và ảnh có ngày trong tên file,
+      nên file thay đổi luôn có URL mới và có thể cache rất lâu. -->
+ <filter>
+  <filter-name>expiresFilter</filter-name><filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
+  <init-param><param-name>ExpiresByType text/css</param-name><param-value>access plus 1 year</param-value></init-param>
+  <init-param><param-name>ExpiresByType text/javascript</param-name><param-value>access plus 1 year</param-value></init-param>
+  <init-param><param-name>ExpiresByType application/javascript</param-name><param-value>access plus 1 year</param-value></init-param>
+  <init-param><param-name>ExpiresByType font/woff2</param-name><param-value>access plus 30 days</param-value></init-param>
+  <init-param><param-name>ExpiresByType image/webp</param-name><param-value>access plus 30 days</param-value></init-param>
+  <init-param><param-name>ExpiresByType image/svg+xml</param-name><param-value>access plus 30 days</param-value></init-param>
+ </filter>
+ <filter-mapping><filter-name>expiresFilter</filter-name><url-pattern>/assets/*</url-pattern></filter-mapping>
+ <error-page><error-code>403</error-code><location>/WEB-INF/views/error.jsp</location></error-page>
+ <error-page><error-code>404</error-code><location>/WEB-INF/views/error.jsp</location></error-page>
+ <error-page><error-code>500</error-code><location>/WEB-INF/views/error.jsp</location></error-page>
+ <session-config><session-timeout>30</session-timeout><cookie-config><http-only>true</http-only><attribute><attribute-name>SameSite</attribute-name><attribute-value>Lax</attribute-value></attribute></cookie-config><tracking-mode>COOKIE</tracking-mode></session-config>
+ <welcome-file-list><welcome-file>home</welcome-file></welcome-file-list>
+</web-app>

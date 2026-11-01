@@ -1,0 +1,8 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- Thanh điều hướng admin dùng chung. Trang include đặt adminSection là products, categories hoặc orders. --%>
+<nav class="admin-nav" aria-label="Các mục quản trị">
+    <a href="${pageContext.request.contextPath}/admin"<c:if test="${adminSection eq 'products'}"> aria-current="page"</c:if>>Sản phẩm và tồn kho</a>
+    <a href="${pageContext.request.contextPath}/admin/categories"<c:if test="${adminSection eq 'categories'}"> aria-current="page"</c:if>>Danh mục</a>
+    <a href="${pageContext.request.contextPath}/admin/orders"<c:if test="${adminSection eq 'orders'}"> aria-current="page"</c:if>>Đơn hàng</a>
+</nav>

@@ -1,0 +1,391 @@
+/* Trang chủ cửa hàng theo phong cách tạp chí. */
+.home-page {
+    color: var(--color-text);
+}
+
+.home-page .topbar {
+    margin-bottom: 0;
+}
+
+.home-hero {
+    position: relative;
+    isolation: isolate;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+/* Ánh sáng lọt qua tán lá phía sau hero: một ảnh chụp với độ mờ rất thấp, không phải gradient. */
+.home-hero::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: url("home/hero-canopy-20261007-small.webp") center / cover no-repeat;
+    content: "";
+    opacity: 0.07;
+    pointer-events: none;
+}
+
+.home-hero-inner {
+    display: grid;
+    width: min(var(--page-max), 100% - 2 * var(--gutter));
+    min-height: 520px;
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 88px);
+    margin-inline: auto;
+    padding-block: clamp(48px, 7vw, 96px);
+}
+
+.home-hero-copy {
+    max-width: 520px;
+}
+
+.home-hero h1 {
+    margin: 0 0 var(--spacing-lg);
+    color: var(--color-heading);
+    font-family: var(--font-serif);
+    font-size: var(--text-display);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+}
+
+.home-hero-copy > p {
+    max-width: 42ch;
+    margin: 0 0 var(--spacing-xl);
+    color: var(--color-text-muted);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+}
+
+.home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.home-hero-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-lg);
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(0.85);
+}
+
+.home-section {
+    width: min(var(--page-max), 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    padding-block: clamp(64px, 9vw, var(--spacing-section));
+}
+
+.home-section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.home-section-heading h2 {
+    margin: 0 0 var(--spacing-xs);
+    color: var(--color-heading);
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+.home-section-heading p {
+    max-width: 65ch;
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+}
+
+.home-section-heading > a {
+    flex-shrink: 0;
+}
+
+.home-text-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-heading);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 6px;
+}
+
+.home-text-link:hover {
+    color: var(--color-heading);
+    text-decoration-color: currentColor;
+}
+
+.home-collection-grid {
+    display: grid;
+    grid-auto-rows: minmax(220px, 18vw);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--spacing-md);
+}
+
+.home-collection {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-lg);
+    background: var(--color-surface-muted);
+    transition: box-shadow 200ms ease;
+}
+
+.home-collection--large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.home-collection img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85);
+    transition: transform 240ms ease;
+}
+
+.home-collection-label {
+    position: absolute;
+    right: var(--spacing-sm);
+    bottom: var(--spacing-sm);
+    left: var(--spacing-sm);
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--color-surface);
+    color: var(--color-heading);
+    font-size: var(--text-body);
+    font-weight: 500;
+}
+
+.home-collection--fallback {
+    display: grid;
+    place-items: center;
+    background: var(--color-surface-muted);
+}
+
+.home-collection--fallback .home-collection-label {
+    position: static;
+}
+
+.home-featured {
+    padding-top: var(--spacing-lg);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .home-collection:hover {
+        box-shadow: var(--shadow-hover);
+    }
+
+    .home-collection:hover img {
+        transform: scale(1.025);
+    }
+}
+
+.home-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.home-band-texture {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.home-outfit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.home-outfit {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-md);
+    background: var(--color-surface);
+}
+
+/* height: auto để tỉ lệ 7:5 thắng thuộc tính height (nếu không ảnh sẽ cao tới 1000px). */
+.home-outfit > img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 7 / 5;
+    object-fit: cover;
+    filter: saturate(0.85);
+}
+
+.home-outfit-copy {
+    padding: var(--spacing-xl);
+}
+
+.home-outfit h3 {
+    margin: 0 0 var(--spacing-xs);
+    color: var(--color-heading);
+    font-family: var(--font-serif);
+    font-size: 1.65rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.home-outfit p {
+    max-width: 52ch;
+    margin: 0 0 var(--spacing-sm);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.home-newest {
+    background: var(--color-canvas);
+}
+
+.home-page .footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-top: 0;
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+.home-page .footer p {
+    color: var(--color-text);
+}
+
+.home-footer-texture {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .home-hero-inner {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--spacing-xl);
+        padding-block: var(--spacing-3xl);
+    }
+
+    .home-hero-copy {
+        max-width: 640px;
+    }
+
+    .home-hero-image {
+        aspect-ratio: 16 / 8;
+    }
+
+    .home-collection-grid {
+        grid-auto-rows: 220px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .home-collection--large {
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-hero-inner {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--spacing-lg);
+        padding-block: var(--spacing-2xl);
+    }
+
+    .home-hero h1 {
+        margin-bottom: var(--spacing-md);
+    }
+
+    .home-hero-copy > p {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .home-hero-image {
+        aspect-ratio: 4 / 3;
+        object-position: 60% center;
+    }
+
+    .home-section {
+        padding-block: var(--spacing-2xl);
+    }
+
+    .home-section-heading {
+        align-items: flex-start;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .home-collection-grid {
+        grid-auto-rows: 210px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--spacing-sm);
+    }
+
+    .home-collection--large {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    .home-collection-label {
+        right: var(--spacing-xs);
+        bottom: var(--spacing-xs);
+        left: var(--spacing-xs);
+        min-height: 44px;
+        padding-inline: var(--spacing-sm);
+        font-size: 0.9rem;
+    }
+
+    .home-outfit-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .home-outfit-copy {
+        padding: var(--spacing-lg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-page *,
+    .home-page *::before,
+    .home-page *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}

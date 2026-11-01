@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Connection pool (DBCP2 có sẵn trong Tomcat). Database.java tra cứu nó với tên java:comp/env/jdbc/LimeAndLemon.
+     Khi build Docker, localhost:5432 được đổi thành db:5432 ở đây và trong db.properties (các test dùng file đó). -->
+<Context>
+    <Resource name="jdbc/LimeAndLemon" auth="Container" type="javax.sql.DataSource"
+              factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://localhost:5432/lime_and_lemon"
+              username="postgres" password="postgres"
+              maxTotal="10" maxIdle="5" maxWaitMillis="10000"
+              validationQuery="SELECT 1" testOnBorrow="true"/>
+</Context>

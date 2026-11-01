@@ -1,0 +1,31 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="app" tagdir="/WEB-INF/tags" %>
+<%-- Thẻ sản phẩm duy nhất, dùng cho trang danh sách sản phẩm và trang chủ.
+     Đọc từ trang include: product (bắt buộc); cardHeading ("h2" khi nằm dưới h1 của trang, mặc định "h3");
+     cardEager (true cho hàng đầu tiên, không chờ lazy loading); cardFirst (true cho đúng một ảnh LCP). --%>
+<c:set var="cardTag" value="${empty cardHeading ? 'h3' : cardHeading}"/>
+<c:set var="cardImage" value="${product.imageUrl}"/>
+<c:set var="cardSrcset" value=""/>
+<%-- Ảnh demo trong /assets/products/ có bản đôi "-small" rộng 600px; URL ngoài do admin nhập thì giữ src thường. --%>
+<c:if test="${not empty product.imageUrl and fn:startsWith(product.imageUrl, '/assets/')}">
+    <c:set var="cardImage" value="${pageContext.request.contextPath}${product.imageUrl}"/>
+    <c:if test="${fn:startsWith(product.imageUrl, '/assets/products/') and fn:endsWith(product.imageUrl, '.webp') and not fn:endsWith(product.imageUrl, '-small.webp')}">
+        <c:set var="cardSrcset" value="${pageContext.request.contextPath}${fn:replace(product.imageUrl, '.webp', '-small.webp')} 600w, ${cardImage} 1200w"/>
+    </c:if>
+</c:if>
+<article class="product-card">
+    <a class="product-art<c:if test='${empty product.imageUrl}'> product-art--empty</c:if>" aria-label="Xem <c:out value='${product.name}'/>" href="${pageContext.request.contextPath}/product?id=${product.productId}">
+        <c:choose>
+            <c:when test="${not empty product.imageUrl}"><img src="<c:out value='${cardImage}'/>"<c:if test="${not empty cardSrcset}"> srcset="<c:out value='${cardSrcset}'/>" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 34vw, 288px"</c:if> alt="<c:out value='${product.name}'/>" width="600" height="750" <c:choose><c:when test="${cardEager}">loading="eager"<c:if test="${cardFirst}"> fetchpriority="high"</c:if></c:when><c:otherwise>loading="lazy"</c:otherwise></c:choose> decoding="async" onerror="this.onerror=null;this.hidden=true;this.nextElementSibling.hidden=false"><span class="product-art-note image-fallback" role="status" aria-live="polite" hidden>Không thể tải ảnh</span></c:when>
+            <c:otherwise><span class="product-art-note">Chưa có ảnh</span></c:otherwise>
+        </c:choose>
+    </a>
+    <div class="product-copy">
+        <p class="eyebrow"><c:out value="${product.category.name}"/></p>
+        <${cardTag} class="product-title"><a href="${pageContext.request.contextPath}/product?id=${product.productId}"><c:out value="${product.name}"/></a></${cardTag}>
+        <c:if test="${not empty soldOutProductIds and soldOutProductIds.contains(product.productId)}"><span class="stock-badge stock-badge--empty">Hết hàng</span></c:if>
+        <p class="price"><app:money amount="${product.price}"/></p>
+    </div>
+</article>

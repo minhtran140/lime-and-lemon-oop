@@ -1,0 +1,1032 @@
+/* Quản trị Lime & Lemon. Nạp sau store.css. Màu, chữ, liên kết và nút lấy từ store.css
+   (:where(.storefront, .admin-shell)); tệp này chỉ thêm bố cục: khung trang, bảng, biểu mẫu. */
+
+:root:has(main.admin-page) {
+    color-scheme: light;
+    --admin-nav-h: 44px;
+    --admin-radius: 8px;
+    --admin-control: 44px;
+    /* Hai lớp dính (thanh điều hướng 44px, đầu bảng ~40px) không được che ô đang focus. */
+    scroll-padding-top: calc(var(--admin-nav-h) + 56px);
+}
+
+/* Header dùng chung chuyển sang điều hướng gọn khi ở khu quản trị. */
+
+.admin-shell .topbar-admin {
+    min-height: 64px;
+}
+
+.admin-shell .topbar-admin .site-nav {
+    gap: var(--spacing-xxs);
+}
+
+.admin-shell .topbar-admin .nav-link:hover {
+    background: var(--color-surface-muted);
+    color: var(--color-heading);
+}
+
+/* Khung trang */
+
+.admin-page {
+    min-width: 0;
+    margin-top: var(--spacing-xl);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.admin-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.admin-header h1 {
+    margin-bottom: var(--spacing-xxs);
+    font-size: var(--text-title);
+    letter-spacing: -0.02em;
+}
+
+.admin-header p {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+.admin-header-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-sm);
+}
+
+.admin-page .back-link {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Điều hướng theo mục: dính phía trên nhưng dưới menu của header (--z-header, --z-popover). */
+
+.admin-nav {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky, 10);
+    display: flex;
+    gap: var(--spacing-xxs);
+    margin: 0 0 var(--spacing-xl);
+    overflow-x: auto;
+    background: var(--color-canvas);
+    box-shadow: 0 1px 0 var(--color-border);
+    scrollbar-width: thin;
+}
+
+.admin-nav a {
+    display: inline-flex;
+    min-height: var(--admin-nav-h);
+    align-items: center;
+    gap: 6px;
+    border-bottom: 2px solid transparent;
+    padding: 0 var(--spacing-sm);
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.admin-nav a:hover {
+    border-bottom-color: var(--color-border-strong);
+    color: var(--color-heading);
+}
+
+.admin-nav a[aria-current="page"] {
+    border-bottom-color: var(--color-heading);
+    color: var(--color-heading);
+}
+
+.admin-nav a:focus-visible {
+    outline-offset: -3px;
+}
+
+/* Mục và thẻ */
+
+.admin-section {
+    margin-bottom: var(--spacing-3xl);
+    border-bottom: 0;
+    padding: 0;
+}
+
+.admin-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-xxs) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-section h2 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.01em;
+}
+
+.admin-section-head p {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.admin-meta {
+    margin: 0 0 var(--spacing-sm);
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 24px;
+}
+
+.admin-meta strong {
+    color: var(--color-heading);
+    font-weight: 600;
+}
+
+.admin-card {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--admin-radius);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+}
+
+.admin-card h2,
+.admin-card h3 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+}
+
+.admin-two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.admin-page > .admin-two-col {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Nút: hình dạng, màu và kích thước lấy từ .button của store.css. */
+
+/* Nút chữ nguy hiểm (summary "Xóa…", "Hủy đơn…"): chỉ chữ đất sét, không nền đặc như .button.danger. */
+.admin-page .link-button.danger {
+    border-color: transparent;
+    background: transparent;
+    color: var(--color-error);
+}
+
+.admin-page .link-button.danger:hover {
+    border-color: transparent;
+    background: var(--color-error-soft);
+    color: var(--color-error);
+}
+
+.admin-page .button {
+    white-space: nowrap;
+}
+
+.admin-page .button:disabled,
+.admin-page .button:disabled:hover {
+    border-color: var(--color-border);
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Biểu mẫu */
+
+.admin-page input:not([type="checkbox"]):not([type="hidden"]),
+.admin-page select,
+.admin-page textarea {
+    min-height: var(--admin-control);
+}
+
+.admin-page input[type="checkbox"] {
+    width: 18px;
+    min-height: 18px;
+    height: 18px;
+    padding: 0;
+}
+
+.field {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+}
+
+.field :is(input, select, textarea) {
+    font-weight: 400;
+}
+
+.field-hint {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+.admin-page .admin-form-grid textarea {
+    min-height: 112px;
+}
+
+.admin-toolbar,
+.admin-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--spacing-xs) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-toolbar > .field {
+    flex: 1 1 220px;
+    max-width: 360px;
+}
+
+.admin-filter > .field {
+    flex: 1 1 200px;
+    max-width: 300px;
+}
+
+.admin-filter-actions {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xxs) var(--spacing-xs);
+}
+
+.admin-jump {
+    margin-left: auto;
+}
+
+.admin-disclosure {
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-disclosure > summary {
+    width: fit-content;
+    list-style: none;
+}
+
+.admin-disclosure > summary::-webkit-details-marker {
+    display: none;
+}
+
+.admin-disclosure[open] > summary {
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--admin-radius);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+}
+
+.admin-form-grid .span-2 {
+    grid-column: 1 / -1;
+}
+
+.admin-form-grid > button {
+    grid-column: 1 / -1;
+    justify-self: start;
+}
+
+.admin-form-grid .form-error-summary {
+    margin: 0;
+}
+
+.admin-form-grid .form-error-summary h3 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.admin-stock-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-md);
+    min-width: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+.admin-stock-fields legend {
+    margin-bottom: var(--spacing-xs);
+    padding: 0;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 18px;
+}
+
+/* Bộ lọc đơn theo trạng thái */
+
+.admin-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-page a.chip {
+    display: inline-flex;
+    min-height: var(--admin-control);
+    align-items: center;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--rounded-sm);
+    padding: 0 var(--spacing-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.admin-page a.chip:hover {
+    border-color: var(--color-heading);
+    background: var(--color-surface-muted);
+    color: var(--color-heading);
+}
+
+.admin-page a.chip[aria-current="true"] {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+}
+
+/* Bảng */
+
+.admin-table-wrap {
+    position: relative;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--admin-radius);
+    background: var(--color-surface);
+    scrollbar-width: auto;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.admin-table th {
+    border-bottom: 1px solid var(--color-border);
+    padding: 10px 12px;
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    border-bottom: 1px solid var(--color-border);
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+.admin-table tfoot th {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 0;
+    background: var(--color-surface);
+    color: var(--color-heading);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-table tfoot td {
+    border-top: 1px solid var(--color-border);
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-table tbody tr:hover td {
+    background: var(--color-canvas);
+}
+
+.admin-table tbody tr[data-dirty] td,
+.admin-table tbody tr[data-inactive][data-dirty] td {
+    background: var(--color-warning-soft);
+}
+
+.admin-table tbody tr[data-dirty] td:first-child {
+    box-shadow: inset 3px 0 0 var(--color-warning);
+}
+
+/* Sản phẩm ngừng bán: nhãn "Ngừng bán", nền Linen, ô nhập nét đứt và chữ nhạt (không dùng opacity
+   để chữ vẫn đạt 4.5:1). */
+.admin-table tbody tr[data-inactive] td {
+    background: var(--color-canvas);
+}
+
+.admin-table tbody tr[data-inactive] :is(input:not([type="checkbox"]), select, textarea) {
+    border-style: dashed;
+    background: transparent;
+    color: var(--color-text-muted);
+}
+
+.admin-table tbody tr[data-inactive] .admin-stock-name {
+    color: var(--color-text-muted);
+}
+
+.admin-table tbody tr[data-inactive] img {
+    opacity: 0.6;
+}
+
+.admin-table tbody tr[data-inactive] .admin-thumb {
+    filter: grayscale(1);
+}
+
+.admin-cell-name {
+    min-width: 260px;
+}
+
+.admin-name-line {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.admin-thumb {
+    display: block;
+    width: 40px;
+    height: 50px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: var(--rounded-sm);
+    background: var(--color-surface-muted);
+}
+
+.admin-thumb img {
+    width: 40px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.admin-row-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--spacing-sm);
+    margin-top: var(--spacing-xxs);
+    padding-left: 48px; /* thẳng hàng với ô tên: ảnh 40px + khe 8px */
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.admin-stock-link {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    gap: 4px;
+}
+
+.admin-stock-detail {
+    color: var(--color-text-muted);
+}
+
+.admin-row-error {
+    margin: var(--spacing-xxs) 0 0 48px;
+}
+
+.row-editor {
+    min-width: 0;
+}
+
+.row-editor[open] {
+    flex: 1 1 100%;
+    margin-left: -48px;
+}
+
+/* Mũi tên chỉ trạng thái mở/đóng cho mọi summary dạng flex. */
+.row-editor > summary {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-accent-text);
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+}
+
+.row-editor > summary::-webkit-details-marker {
+    display: none;
+}
+
+.row-editor > summary::before {
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    content: "";
+    transform: rotate(-45deg);
+}
+
+.row-editor[open] > summary::before {
+    transform: rotate(45deg);
+}
+
+.row-editor .admin-form-grid {
+    grid-template-columns: 1fr;
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    background: var(--color-surface-muted);
+}
+
+.admin-inline.status-control {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--spacing-xxs);
+}
+
+.admin-page .confirm-inline > summary {
+    padding-inline: 8px;
+    list-style: none;
+}
+
+.confirm-inline > summary::-webkit-details-marker {
+    display: none;
+}
+
+.confirm-inline[open] {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xxs) var(--spacing-xs);
+}
+
+.admin-table input:not([type="checkbox"]),
+.admin-table select {
+    width: auto;
+    min-width: 0;
+    min-height: var(--admin-control);
+    padding: 6px 10px;
+}
+
+.admin-table select {
+    min-width: 96px;
+}
+
+.admin-table .check {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.admin-table input.admin-input-name {
+    min-width: 200px;
+    flex: 1 1 auto;
+}
+
+.admin-table input.admin-input-price {
+    width: 130px;
+}
+
+.admin-table input.admin-input-adjust {
+    width: 90px;
+}
+
+.admin-table input.admin-input-short {
+    width: 112px;
+}
+
+.admin-mono {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+@media (min-width: 769px) {
+    .admin-table-orders td:nth-child(2),
+    .admin-table-orders td:nth-child(3) {
+        white-space: nowrap;
+    }
+}
+
+.admin-numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-table th.admin-numeric,
+.admin-table td.admin-numeric {
+    text-align: right;
+}
+
+.admin-stock {
+    color: var(--color-heading);
+    font-weight: 600;
+}
+
+.admin-cell-product {
+    min-width: 160px;
+    max-width: 260px;
+    color: var(--color-heading);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.admin-inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xxs) 6px;
+}
+
+.admin-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--spacing-xxs);
+}
+
+.admin-actions-start {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--spacing-xxs) var(--spacing-sm);
+}
+
+.admin-col-actions {
+    width: 1%;
+    background: var(--color-surface);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.admin-table th.admin-col-actions {
+    background: var(--color-surface-muted);
+}
+
+.admin-empty {
+    padding: var(--spacing-lg);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* Nhãn trạng thái */
+
+.badge {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--rounded-sm);
+    padding: 0 8px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    white-space: nowrap;
+}
+
+.badge-warn {
+    border-color: var(--color-warning);
+    background: var(--color-warning-soft);
+    color: var(--color-warning-deep);
+}
+
+.badge-muted {
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+}
+
+/* Cặp nhãn/giá trị ở chi tiết đơn */
+
+.admin-dl {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: var(--spacing-xs) var(--spacing-md);
+    margin: 0;
+}
+
+.admin-dl dt {
+    color: var(--color-text-muted);
+}
+
+.admin-dl dd {
+    min-width: 0;
+    margin: 0;
+    color: var(--color-heading);
+}
+
+/* Giao diện co giãn theo màn hình (responsive) */
+
+/* Đầu bảng dính ngay dưới thanh điều hướng dính. */
+@media (min-width: 1280px) {
+    .admin-table-wrap {
+        overflow-x: clip;
+    }
+
+    .admin-table thead th {
+        position: sticky;
+        top: var(--admin-nav-h);
+        z-index: 2;
+    }
+}
+
+@media (min-width: 769px) {
+    .admin-col-actions .admin-actions:not(.admin-actions-start) {
+        flex-wrap: nowrap;
+    }
+
+    .admin-table-products td,
+    .admin-table-stock td {
+        padding-block: 6px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .admin-col-actions {
+        position: sticky;
+        right: 0;
+        z-index: 1;
+        box-shadow: -1px 0 0 var(--color-border);
+    }
+
+    .admin-table th.admin-col-actions {
+        z-index: 3;
+    }
+}
+
+@media (max-width: 1279px) {
+    .admin-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        margin-top: var(--spacing-lg);
+    }
+
+    .admin-header h1 {
+        font-size: 28px;
+        line-height: 36px;
+    }
+
+    /* Bảng thành thẻ: mỗi ô hiện nhãn cột từ data-label. */
+    .admin-table-wrap {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: none;
+    }
+
+    .admin-table {
+        min-width: 0;
+    }
+
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tfoot,
+    .admin-table tr,
+    .admin-table th,
+    .admin-table td {
+        display: block;
+    }
+
+    .admin-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+
+    .admin-table tbody tr,
+    .admin-table tfoot tr {
+        margin-bottom: var(--spacing-sm);
+        border: 1px solid var(--color-border);
+        border-radius: var(--admin-radius);
+        background: var(--color-surface);
+        overflow: hidden;
+    }
+
+    .admin-table tbody tr:hover td {
+        background: transparent;
+    }
+
+    .admin-table tbody tr[data-dirty] td {
+        background: var(--color-warning-soft);
+    }
+
+    .admin-table td {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px 8px;
+        border-bottom: 0;
+        padding: 8px 12px;
+    }
+
+    .admin-table td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 100%;
+        color: var(--color-text-muted);
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    .admin-table td :is(input:not([type="checkbox"]), select) {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .admin-cell-name {
+        display: block;
+        min-width: 0;
+    }
+
+    .admin-cell-name::before {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .admin-cell-product {
+        max-width: none;
+    }
+
+    .admin-table td.admin-numeric {
+        text-align: left;
+    }
+
+    .admin-col-actions {
+        width: auto;
+        text-align: left;
+    }
+
+    .admin-col-actions .admin-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* "Chi tiết" lặp lại liên kết mã đơn nên bỏ khỏi thẻ. */
+    .admin-table td.admin-col-details {
+        display: none;
+    }
+
+    /* Thẻ sản phẩm, tồn kho: các ô ngắn đứng cạnh nhau cho thẻ thấp hơn. */
+    .admin-table-products tbody tr.data-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-table-stock tbody tr.data-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .admin-table-orders tbody tr.data-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-table-products tbody td,
+    .admin-table-stock tbody td,
+    .admin-table-orders tbody td {
+        grid-column: 1 / -1;
+        min-width: 0;
+    }
+
+    .admin-table-products tbody td.admin-half,
+    .admin-table-stock tbody td.admin-half,
+    .admin-table-orders tbody td.admin-half {
+        grid-column: auto;
+    }
+
+    .admin-table-orders .status-control {
+        flex: 1 1 100%;
+        flex-wrap: nowrap;
+    }
+
+    .admin-table-orders .status-control select {
+        flex: 1 1 auto;
+    }
+
+    .admin-table-stock tbody td.admin-col-actions {
+        grid-column: 2 / -1;
+        align-self: end;
+    }
+
+    .admin-table-stock .admin-actions {
+        flex-wrap: nowrap;
+    }
+
+    .admin-table-products .admin-row-meta {
+        padding-left: 0;
+    }
+
+    /* Ô tích: nhãn bên trái, ô tích bên phải, một dòng. */
+    .admin-table-products tbody td.admin-half:has(.check) {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    .admin-table-products td.admin-half:has(.check)::before {
+        flex: 1 1 auto;
+    }
+
+    .admin-table-products .admin-col-actions::before,
+    .admin-table-stock .admin-col-actions::before {
+        display: none;
+    }
+
+    .admin-table-products tbody td,
+    .admin-table-stock tbody td {
+        padding-block: 6px;
+    }
+
+    .row-editor[open] {
+        margin-left: 0;
+    }
+}
+
+/* Máy tính bảng: hai thẻ mỗi hàng thay vì một cột dài. */
+@media (min-width: 577px) and (max-width: 768px) {
+    .admin-table-products tbody,
+    .admin-table-stock tbody,
+    .admin-table-orders tbody {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--spacing-sm);
+    }
+
+    .admin-table-products tbody tr,
+    .admin-table-stock tbody tr,
+    .admin-table-orders tbody tr {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .admin-card {
+        padding: var(--spacing-md);
+    }
+
+    .admin-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-md);
+    }
+
+    .admin-toolbar > *,
+    .admin-filter > .field {
+        flex: 1 1 100%;
+        max-width: none;
+    }
+
+    .admin-jump {
+        margin-left: 0;
+    }
+
+    .admin-dl {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-xxs);
+    }
+
+    .admin-dl dd {
+        margin-bottom: var(--spacing-xs);
+    }
+}

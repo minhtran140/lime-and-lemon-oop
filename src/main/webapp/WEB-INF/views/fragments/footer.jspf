@@ -1,0 +1,16 @@
+<%@ page pageEncoding="UTF-8" %>
+<footer class="footer">
+    <c:if test="${homePage}"><img class="home-footer-texture" src="${pageContext.request.contextPath}/assets/home/footer-texture-20261007-small.webp" srcset="${pageContext.request.contextPath}/assets/home/footer-texture-20261007-small.webp 1000w, ${pageContext.request.contextPath}/assets/home/footer-texture-20261007.webp 2000w" sizes="100vw" alt="" width="2000" height="1100" loading="lazy" decoding="async"></c:if>
+    <div class="footer-inner">
+        <a class="footer-brand" href="${pageContext.request.contextPath}/"><span class="brand-mark" aria-hidden="true"><%@ include file="/WEB-INF/views/fragments/logo-mark.jspf" %></span><span class="brand-name">Lime <em>&amp;</em> Lemon</span></a>
+        <p class="footer-tagline">Mặc nhẹ nhàng, sống chậm rãi.</p>
+        <c:if test="${not adminPage}">
+        <nav class="footer-links" aria-label="Chân trang">
+            <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+            <a href="${pageContext.request.contextPath}/products">Sản phẩm</a>
+            <a href="${pageContext.request.contextPath}/cart">Giỏ hàng</a>
+            <a href="${pageContext.request.contextPath}/orders">Đơn hàng</a>
+        </nav>
+        </c:if>
+    </div>
+</footer>
