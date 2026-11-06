@@ -82,7 +82,7 @@ public final class AdminServlet extends HttpServlet {
         if (keyword != null && keyword.isBlank()) keyword = null;
         request.setAttribute("filterQ", keyword);
         request.setAttribute("filterCategoryId", categoryId);
-        request.setAttribute("categories", catalog.allCategories());
+        request.setAttribute("categories", catalog.categories());
         request.setAttribute("products", catalog.allProducts(keyword, categoryId));
         request.setAttribute("stockRows", catalog.stockRows(keyword, categoryId));
         request.setAttribute("productIdsWithOrders", catalog.productIdsWithOrders());
@@ -216,11 +216,13 @@ public final class AdminServlet extends HttpServlet {
                 return Done.saved("Đã tạo sản phẩm “" + product.getName() + "”." + featuredNote(product));
             }
             case "/product/update" -> {
+                // xmin không bao giờ bằng 0: thiếu hoặc sai version được coi như xung đột, và form hiện lại mang version mới.
+                Long version = WebSupport.optionalId(request, "version");
                 Product product = catalog.updateProduct(WebSupport.longParameter(request, "productId"),
                         WebSupport.longParameter(request, "categoryId", "Vui lòng chọn danh mục."),
                         request.getParameter("name"), request.getParameter("description"), request.getParameter("color"),
                         requiredPrice(request), request.getParameter("imageUrl"), WebSupport.checkbox(request, "active"),
-                        WebSupport.checkbox(request, "featured"));
+                        WebSupport.checkbox(request, "featured"), version == null ? 0 : version);
                 return Done.saved("Đã lưu sản phẩm “" + product.getName() + "”." + featuredNote(product),
                         "#product-row-" + product.getProductId());
             }

@@ -30,7 +30,7 @@
 .admin-page {
     min-width: 0;
     margin-top: var(--spacing-xl);
-    font-size: 14px;
+    font-size: var(--text-label);
     line-height: 20px;
 }
 
@@ -94,6 +94,19 @@
     white-space: nowrap;
 }
 
+/* Tab đầu (dài nhất) chỉ co lại và xuống dòng khi ba tab không đủ chỗ, nên thanh tab không bao giờ cuộn ngang. */
+.admin-nav a:first-child {
+    min-width: 0;
+    line-height: 1.25;
+    white-space: normal;
+}
+
+@media (max-width: 360px) {
+    .admin-nav a {
+        padding-inline: var(--spacing-xs);
+    }
+}
+
 .admin-nav a:hover {
     border-bottom-color: var(--color-border-strong);
     color: var(--color-heading);
@@ -127,7 +140,7 @@
 
 .admin-section h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--text-heading);
     line-height: 32px;
     letter-spacing: -0.01em;
 }
@@ -136,14 +149,14 @@
     max-width: 62ch;
     margin: 0;
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     line-height: 18px;
 }
 
 .admin-meta {
     margin: 0 0 var(--spacing-sm);
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     line-height: 24px;
 }
 
@@ -166,7 +179,7 @@
 .admin-card h2,
 .admin-card h3 {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--text-subhead);
     line-height: 28px;
 }
 
@@ -228,7 +241,7 @@
     min-width: 0;
     flex-direction: column;
     gap: 4px;
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 500;
     line-height: 18px;
 }
@@ -239,7 +252,7 @@
 
 .field-hint {
     color: var(--color-text-muted);
-    font-size: 12px;
+    font-size: var(--text-caption);
     font-weight: 400;
     line-height: 16px;
 }
@@ -321,7 +334,7 @@
 
 .admin-form-grid .form-error-summary h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--text-body);
     line-height: 24px;
 }
 
@@ -338,7 +351,7 @@
 .admin-stock-fields legend {
     margin-bottom: var(--spacing-xs);
     padding: 0;
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 500;
     line-height: 18px;
 }
@@ -392,7 +405,7 @@
     width: 100%;
     min-width: 640px;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: var(--text-label);
     line-height: 20px;
 }
 
@@ -401,7 +414,7 @@
     padding: 10px 12px;
     background: var(--color-surface-muted);
     color: var(--color-text);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 500;
     text-align: left;
     white-space: nowrap;
@@ -418,7 +431,7 @@
     border-bottom: 0;
     background: var(--color-surface);
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 600;
 }
 
@@ -471,12 +484,6 @@
     min-width: 260px;
 }
 
-.admin-name-line {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-}
-
 .admin-thumb {
     display: block;
     width: 40px;
@@ -500,15 +507,17 @@
     gap: 0 var(--spacing-sm);
     margin-top: var(--spacing-xxs);
     padding-left: 48px; /* thẳng hàng với ô tên: ảnh 40px + khe 8px */
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     line-height: 18px;
 }
 
+/* Vùng bấm cao 44px; margin âm theo chiều dọc giữ nhịp dòng 28px như cũ. */
 .admin-stock-link {
     display: inline-flex;
-    min-height: 28px;
+    min-height: 44px;
     align-items: center;
     gap: 4px;
+    margin-block: -8px;
 }
 
 .admin-stock-detail {
@@ -531,9 +540,10 @@
 /* Mũi tên chỉ trạng thái mở/đóng cho mọi summary dạng flex. */
 .row-editor > summary {
     display: inline-flex;
-    min-height: 32px;
+    min-height: 44px;
     align-items: center;
     gap: 6px;
+    margin-block: -6px;
     color: var(--color-accent-text);
     font-weight: 500;
     cursor: pointer;
@@ -628,7 +638,7 @@
 .admin-mono {
     color: var(--color-text-muted);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
 }
 
 @media (min-width: 769px) {
@@ -710,7 +720,7 @@
     padding: 0 8px;
     background: var(--color-surface);
     color: var(--color-text);
-    font-size: 12px;
+    font-size: var(--text-caption);
     font-weight: 500;
     line-height: 16px;
     white-space: nowrap;
@@ -719,7 +729,7 @@
 .badge-warn {
     border-color: var(--color-warning);
     background: var(--color-warning-soft);
-    color: var(--color-warning-deep);
+    color: var(--color-warning);
 }
 
 .badge-muted {
@@ -798,7 +808,7 @@
     }
 
     .admin-header h1 {
-        font-size: 28px;
+        font-size: var(--text-title);
         line-height: 36px;
     }
 
@@ -861,7 +871,7 @@
         content: attr(data-label);
         flex: 0 0 100%;
         color: var(--color-text-muted);
-        font-size: 12px;
+        font-size: var(--text-caption);
         line-height: 16px;
     }
 

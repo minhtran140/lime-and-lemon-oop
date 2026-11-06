@@ -30,14 +30,14 @@
             <p>Ngày đặt <c:choose><c:when test="${empty order.createdAt}">—</c:when><c:otherwise>${order.createdAt.format(dateTimeFormat)}</c:otherwise></c:choose></p>
         </div>
         <div class="admin-header-status">
-            <span class="status-badge status-${order.status}"><app:enumLabel value="${order.status}"/></span>
+            <span class="status-badge status-${order.status}"><c:out value="${order.status.label}"/></span>
             <c:if test="${canMove}">
                 <form class="admin-inline status-control" method="post" action="${ctx}/admin/order/status">
                     <input type="hidden" name="orderId" value="${order.orderId}">
                     <input type="hidden" name="returnTo" value="/admin/order/detail?id=${order.orderId}">
                     <label class="visually-hidden" for="order-status">Trạng thái đơn #<c:out value="${order.orderId}"/></label>
                     <select id="order-status" name="status"><c:forEach items="${orderStatuses}" var="status"><c:if test="${status == order.status or (order.status.allows(status) and status.name() ne 'CANCELLED')}">
-                        <option value="${status}"<c:if test="${status == order.status}"> selected</c:if>><app:enumLabel value="${status}"/></option>
+                        <option value="${status}"<c:if test="${status == order.status}"> selected</c:if>><c:out value="${status.label}"/></option>
                     </c:if></c:forEach></select>
                     <button class="button secondary button-small" type="submit" data-save>Cập nhật<span class="visually-hidden"> đơn #<c:out value="${order.orderId}"/></span></button>
                 </form>

@@ -7,14 +7,6 @@
 }
 
 @font-face {
-    font-family: "Geist Mono";
-    src: url("fonts/GeistMono.woff2") format("woff2");
-    font-style: normal;
-    font-weight: 100 900;
-    font-display: swap;
-}
-
-@font-face {
     font-family: "Newsreader";
     src: url("fonts/Newsreader-latin-ext.woff2") format("woff2");
     font-style: normal;
@@ -90,20 +82,17 @@
     --color-button: var(--mm-moss);
     --color-button-hover: var(--mm-moss-deep);
     --color-on-button: var(--mm-paper);
-    --color-on-button-hover: var(--mm-paper);
     --color-chip: var(--mm-pale-leaf);
     --color-on-chip: var(--mm-leaf-text);
 
     --color-success: var(--mm-leaf-text);
     --color-success-soft: var(--mm-pale-leaf);
-    --color-success-text: var(--mm-leaf-text);
     --color-error: var(--mm-clay-text);
     --color-error-hover: color-mix(in srgb, var(--mm-clay-text) 82%, var(--mm-bark));
     --color-error-soft: var(--mm-pale-clay);
     /* Ô nhập của form: Dry Reed cho viền đạt tương phản 5.3:1 trên Paper (WCAG 1.4.11 yêu cầu 3:1). */
     --color-field-border: var(--mm-muted);
     --color-warning: var(--mm-lemon-text);
-    --color-warning-deep: var(--mm-lemon-text);
     --color-warning-soft: var(--mm-pale-lemon);
     --color-info: var(--mm-sage-text);
     --color-info-soft: var(--mm-pale-sage);
@@ -133,6 +122,10 @@
     --text-label: 14px;
     --text-price: 18px;
     --text-eyebrow: 13px;
+    --text-caption: 12px;
+    --text-subhead: 20px;
+    --text-heading: 24px;
+    --text-wordmark: 23px;
     --spacing-xxs: 4px;
     --spacing-xs: 8px;
     --spacing-sm: 12px;
@@ -147,7 +140,7 @@
     --gutter: 24px;
     --font-sans: "Geist", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
     --font-serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-    --font-mono: "Geist Mono", "JetBrains Mono", Consolas, monospace;
+    --font-mono: ui-monospace, Consolas, "Cascadia Mono", monospace;
     font-family: var(--font-sans);
     color: var(--color-text);
     background: var(--color-canvas);
@@ -172,7 +165,7 @@ body {
     background: var(--color-canvas);
     color: var(--color-text);
     font-family: var(--font-sans);
-    font-size: 16px;
+    font-size: var(--text-body);
     line-height: 1.6;
 }
 
@@ -288,7 +281,7 @@ img {
 
 :where(.storefront, .admin-shell) h3 {
     margin-bottom: var(--spacing-xs);
-    font-size: 20px;
+    font-size: var(--text-subhead);
     line-height: 28px;
     letter-spacing: -0.01em;
 }
@@ -337,7 +330,7 @@ img {
 :where(.storefront, .admin-shell) .button:hover {
     border-color: var(--color-button-hover);
     background: var(--color-button-hover);
-    color: var(--color-on-button-hover);
+    color: var(--color-on-button);
     text-decoration: none;
 }
 
@@ -488,12 +481,13 @@ img {
 
 .brand {
     display: inline-flex;
+    min-height: 44px;
     flex: 0 0 auto;
     align-items: center;
     gap: var(--spacing-xs);
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: 23px;
+    font-size: var(--text-wordmark);
     font-weight: 500;
     line-height: 28px;
     letter-spacing: -0.02em;
@@ -525,7 +519,7 @@ img {
 
 /* Wordmark "Lime & Lemon": dấu & là ký tự duy nhất mang màu leaf. */
 .brand-name em {
-    color: var(--color-success-text);
+    color: var(--color-success);
     font-style: normal;
 }
 
@@ -563,7 +557,8 @@ img {
 }
 
 .mobile-cart-link:hover,
-.mobile-icon-button:hover {
+.mobile-icon-button:hover,
+.site-search button:hover {
     border-color: var(--color-accent);
     background: var(--color-accent-soft);
     color: var(--color-heading);
@@ -626,7 +621,7 @@ img {
     color: var(--color-text);
     cursor: pointer;
     font: inherit;
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
     list-style: none;
 }
@@ -667,7 +662,7 @@ img {
     min-width: 0;
     min-height: 44px;
     border-radius: var(--rounded-sm);
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
 .site-search button {
@@ -681,12 +676,6 @@ img {
     color: var(--color-link);
 }
 
-.site-search button:hover {
-    border-color: var(--color-accent);
-    background: var(--color-accent-soft);
-    color: var(--color-heading);
-}
-
 .nav-link {
     display: inline-flex;
     min-height: 44px;
@@ -694,7 +683,7 @@ img {
     border-radius: var(--rounded-sm);
     padding: 0 var(--spacing-sm);
     color: var(--color-text);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
     line-height: 20px;
     text-decoration: none;
@@ -716,7 +705,7 @@ img {
     padding: 0 6px;
     background: var(--color-chip);
     color: var(--color-on-chip);
-    font-size: 12px;
+    font-size: var(--text-caption);
     font-weight: 600;
     line-height: 1.2;
     font-variant-numeric: tabular-nums;
@@ -753,11 +742,11 @@ main .notice {
 .notice.success {
     border-left-color: var(--color-success);
     background: var(--color-success-soft);
-    color: var(--color-success-text);
+    color: var(--color-success);
 }
 
 .notice.success .notice-label {
-    color: var(--color-success-text);
+    color: var(--color-success);
 }
 
 .notice.error {
@@ -797,7 +786,7 @@ main .notice {
 
 .form-error-summary h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--text-price);
     line-height: 26px;
 }
 
@@ -819,7 +808,7 @@ main .notice {
     display: block;
     min-width: 0;
     color: var(--color-error);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 400;
     line-height: 18px;
     overflow-wrap: anywhere;
@@ -885,7 +874,7 @@ main .notice {
     padding: 0 var(--spacing-md);
     background: var(--color-surface);
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
     line-height: 20px;
     text-decoration: none;
@@ -935,10 +924,11 @@ main .notice {
 
 .clear-filters {
     margin: var(--spacing-xxs) 0 0;
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
-.clear-filters a {
+.clear-filters a,
+.order-link {
     display: inline-flex;
     min-height: 44px;
     align-items: center;
@@ -953,7 +943,7 @@ main .notice {
 
 .catalog-result-count {
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-variant-numeric: tabular-nums;
 }
 
@@ -1070,7 +1060,7 @@ main .notice {
 
 .price--large {
     margin: 0 0 var(--spacing-lg);
-    font-size: 24px;
+    font-size: var(--text-heading);
     line-height: 32px;
 }
 
@@ -1086,7 +1076,7 @@ main .notice {
     align-items: center;
     margin-bottom: var(--spacing-md);
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
 .breadcrumb {
@@ -1100,7 +1090,7 @@ main .notice {
     margin: 0;
     padding: 0;
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
     list-style: none;
 }
 
@@ -1181,7 +1171,7 @@ main .notice {
 .product-info h2 {
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-sm);
-    font-size: 18px;
+    font-size: var(--text-price);
     line-height: 1.35;
 }
 
@@ -1207,7 +1197,7 @@ main .notice {
 .pdp-option-name,
 .pdp-quantity > label {
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 600;
     line-height: 20px;
 }
@@ -1217,7 +1207,7 @@ main .notice {
     align-items: center;
     gap: var(--spacing-xs);
     color: var(--color-text);
-    font-size: 14px;
+    font-size: var(--text-label);
     line-height: 20px;
 }
 
@@ -1277,7 +1267,7 @@ main .notice {
     padding: 0 var(--spacing-sm);
     background: var(--color-surface);
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
     line-height: 20px;
     font-variant-numeric: tabular-nums;
@@ -1315,7 +1305,7 @@ main .notice {
     gap: var(--spacing-xs);
     margin: 0 0 var(--spacing-lg);
     color: var(--color-success);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
     line-height: 20px;
 }
@@ -1348,7 +1338,7 @@ main .notice {
     align-items: center;
     gap: var(--spacing-xs);
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
 .pdp-quantity {
@@ -1371,7 +1361,7 @@ main .notice {
     border: 0;
     border-radius: 0;
     text-align: center;
-    font-size: 16px;
+    font-size: var(--text-body);
     font-variant-numeric: tabular-nums;
     -moz-appearance: textfield;
     appearance: textfield;
@@ -1400,7 +1390,7 @@ main .notice {
     padding: 0;
     background: transparent;
     color: var(--color-heading);
-    font-size: 20px;
+    font-size: var(--text-subhead);
     line-height: 24px;
 }
 
@@ -1438,7 +1428,7 @@ main .notice {
 .pdp-note {
     margin: var(--spacing-md) 0 0;
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
 .pdp-details {
@@ -1501,7 +1491,7 @@ html:not(.js) .pdp-qty input {
     padding: 0 var(--spacing-sm);
     background: var(--color-surface-muted);
     color: var(--color-text);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 500;
     line-height: 16px;
     white-space: nowrap;
@@ -1537,7 +1527,7 @@ html:not(.js) .pdp-qty input {
 
 .cart-items > h2 {
     margin-bottom: var(--spacing-sm);
-    font-size: 18px;
+    font-size: var(--text-price);
     line-height: 1.35;
 }
 
@@ -1566,7 +1556,7 @@ html:not(.js) .pdp-qty input {
 
 .cart-line-product h3 {
     margin: 0 0 var(--spacing-xxs);
-    font-size: 16px;
+    font-size: var(--text-body);
     line-height: 1.35;
     overflow-wrap: anywhere;
 }
@@ -1574,7 +1564,7 @@ html:not(.js) .pdp-qty input {
 .cart-line-product p {
     margin: 0;
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
     overflow-wrap: anywhere;
 }
 
@@ -1582,7 +1572,7 @@ html:not(.js) .pdp-qty input {
     display: block;
     margin-bottom: var(--spacing-xxs);
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     line-height: 1.35;
 }
 
@@ -1590,7 +1580,7 @@ html:not(.js) .pdp-qty input {
 .cart-line-subtotal strong {
     display: block;
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-variant-numeric: tabular-nums;
     overflow-wrap: anywhere;
 }
@@ -1607,7 +1597,7 @@ html:not(.js) .pdp-qty input {
     flex-direction: column;
     gap: var(--spacing-xxs);
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
 }
 
 .cart-line-update input {
@@ -1654,7 +1644,7 @@ html:not(.js) .pdp-qty input {
 
 .cart-summary h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--text-price);
     line-height: 1.35;
 }
 
@@ -1670,7 +1660,7 @@ html:not(.js) .pdp-qty input {
 
 .cart-summary-total strong {
     color: var(--color-heading);
-    font-size: 18px;
+    font-size: var(--text-price);
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
@@ -1678,7 +1668,7 @@ html:not(.js) .pdp-qty input {
 .cart-summary-note {
     margin: 0;
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
 }
 
 .cart-summary-actions {
@@ -1726,9 +1716,11 @@ html:not(.js) .pdp-qty input {
 }
 
 .form-card h2,
-.summary-card h2 {
+.summary-card h2,
+.empty-state h2,
+.empty-state h3 {
     margin-bottom: 0;
-    font-size: 20px;
+    font-size: var(--text-subhead);
     line-height: 28px;
 }
 
@@ -1749,11 +1741,6 @@ html:not(.js) .pdp-qty input {
 .summary-card label {
     display: flex;
     flex-direction: column;
-}
-
-.form-card.compact {
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
 }
 
 .checkout-grid .summary-card p {
@@ -1856,13 +1843,13 @@ html:not(.js) .pdp-qty input {
 
 .order-item-row p span {
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
 }
 
 .order-item-row > strong {
     flex: 0 0 auto;
     color: var(--color-heading);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-variant-numeric: tabular-nums;
     text-align: right;
 }
@@ -1891,7 +1878,7 @@ html:not(.js) .pdp-qty input {
     border-top: 1px solid var(--color-border);
     padding-top: var(--spacing-md);
     color: var(--color-heading);
-    font-size: 18px;
+    font-size: var(--text-price);
 }
 
 .order-shipping-details {
@@ -1907,7 +1894,7 @@ html:not(.js) .pdp-qty input {
 
 .order-shipping-details dt {
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
 }
 
 .order-shipping-details dd {
@@ -1936,7 +1923,8 @@ html:not(.js) .pdp-qty input {
 
 /* Quản trị */
 
-.inline {
+.inline,
+.admin-name-line {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
@@ -1959,7 +1947,7 @@ html:not(.js) .pdp-qty input {
 :where(.storefront) table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: var(--text-label);
     line-height: 20px;
 }
 
@@ -1974,7 +1962,7 @@ html:not(.js) .pdp-qty input {
 :where(.storefront) th {
     background: var(--color-surface-muted);
     color: var(--color-text);
-    font-size: 14px;
+    font-size: var(--text-label);
     font-weight: 500;
 }
 
@@ -1993,7 +1981,7 @@ th.numeric {
 
 .status-PENDING {
     background: var(--color-warning-soft);
-    color: var(--color-warning-deep);
+    color: var(--color-warning);
 }
 
 .status-CONFIRMED {
@@ -2008,7 +1996,7 @@ th.numeric {
 
 .status-COMPLETED {
     background: var(--color-success-soft);
-    color: var(--color-success-text);
+    color: var(--color-success);
 }
 
 .status-CANCELLED {
@@ -2058,13 +2046,6 @@ th.numeric {
     font-size: var(--text-label);
 }
 
-.empty-state h2,
-.empty-state h3 {
-    margin-bottom: 0;
-    font-size: 20px;
-    line-height: 28px;
-}
-
 /* Chân trang */
 
 .footer {
@@ -2086,7 +2067,7 @@ th.numeric {
     gap: var(--spacing-xs);
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: 24px;
+    font-size: var(--text-heading);
     font-weight: 500;
     letter-spacing: -0.02em;
     text-decoration: none;
@@ -2107,7 +2088,7 @@ th.numeric {
 .footer .footer-tagline {
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: 20px;
+    font-size: var(--text-subhead);
     line-height: 1.4;
 }
 
@@ -2217,7 +2198,7 @@ th.numeric {
     }
 
     .brand {
-        font-size: 18px;
+        font-size: var(--text-price);
     }
 
     .site-menu {
@@ -2389,7 +2370,7 @@ th.numeric {
     }
 
     .product-copy .price {
-        font-size: 16px;
+        font-size: var(--text-body);
         line-height: 24px;
     }
 
@@ -2521,7 +2502,7 @@ th.numeric {
 
 @media (max-width: 360px) {
     .brand {
-        font-size: 16px;
+        font-size: var(--text-body);
     }
 }
 
@@ -2556,12 +2537,6 @@ label + .field-error {
 .orders-note {
     margin: 0;
     font-size: var(--text-label);
-}
-
-.order-link {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
 }
 
 .home-page main > .notice {

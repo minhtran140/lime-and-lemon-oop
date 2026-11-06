@@ -14,7 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @WebServlet("/checkout")
 public final class CheckoutServlet extends HttpServlet {
@@ -38,7 +42,12 @@ public final class CheckoutServlet extends HttpServlet {
         try {
             ShippingAddress address = new ShippingAddress(request.getParameter("recipientName"),
                     request.getParameter("phone"), request.getParameter("address"));
-            Order order = checkout.checkout(customer, cart, address);
+            // Con số khách đã xem nằm trong session, tra bằng quoteId của đúng trang đã gửi form (mỗi tab một quoteId).
+            Map<String, String> quotes = quotesOf(request);
+            String quoteId = request.getParameter("quoteId");
+            String confirmedQuote = quoteId == null ? null : quotes.get(quoteId);
+            Order order = checkout.checkout(customer, cart, address, confirmedQuote);
+            if (quoteId != null) quotes.remove(quoteId);
             WebSupport.flash(request, "Đặt hàng thành công.");
             response.sendRedirect(WebSupport.path(request, "/orders/detail?id=" + order.getOrderId()));
         } catch (OutOfStockException exception) {
@@ -56,6 +65,18 @@ public final class CheckoutServlet extends HttpServlet {
         }
     }
 
+    /** Các bản ghi (quoteId → nội dung đơn khách đã xem) của những trang thanh toán mà session này đã mở. */
+    @SuppressWarnings("unchecked")
+    private static Map<String, String> quotesOf(HttpServletRequest request) {
+        HttpSession session = request.getSession(true);
+        Map<String, String> quotes = (Map<String, String>) session.getAttribute("checkoutQuotes");
+        if (quotes == null) {
+            quotes = new ConcurrentHashMap<>();
+            session.setAttribute("checkoutQuotes", quotes);
+        }
+        return quotes;
+    }
+
     /** Trang thanh toán: địa chỉ đã gửi (nếu có) và giỏ hàng được tính giá từ database. */
     private void showForm(HttpServletRequest request, HttpServletResponse response, User customer, Cart cart)
             throws ServletException, IOException {
@@ -69,11 +90,17 @@ public final class CheckoutServlet extends HttpServlet {
             response.sendRedirect(WebSupport.path(request, "/cart"));
             return;
         }
+        if (summary != null) {
+            // Mỗi lần hiện trang là một quoteId mới, để nhiều tab mở cùng lúc vẫn đúng: tab nào hiện giá cũ thì bị từ chối.
+            String quoteId = UUID.randomUUID().toString();
+            Map<String, String> quotes = quotesOf(request);
+            // Quá nhiều trang cũ thì xóa hết: tab cũ chỉ cần bấm Đặt hàng lần nữa để xác nhận lại.
+            if (quotes.size() > 20) quotes.clear();
+            quotes.put(quoteId, CheckoutService.quoteOf(summary));
+            request.setAttribute("quoteId", quoteId);
+        }
         request.setAttribute("checkoutSummary", summary);
         request.setAttribute("discountLabel", checkout.discountLabel());
-        request.setAttribute("recipientName", request.getParameter("recipientName"));
-        request.setAttribute("phone", request.getParameter("phone"));
-        request.setAttribute("address", request.getParameter("address"));
         request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
     }
 }

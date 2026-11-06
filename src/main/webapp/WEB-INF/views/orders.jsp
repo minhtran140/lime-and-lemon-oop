@@ -45,7 +45,7 @@
                         <div><dt>Số điện thoại</dt><dd class="wrap-anywhere"><c:out value="${order.shippingAddress.phone}"/></dd></div>
                         <div><dt>Địa chỉ</dt><dd class="wrap-anywhere"><c:out value="${order.shippingAddress.address}"/></dd></div>
                         <div><dt>Thanh toán</dt><dd>Thanh toán khi nhận hàng</dd></div>
-                        <div><dt>Trạng thái</dt><dd><span class="status-badge status-${order.status}"><app:enumLabel value="${order.status}"/></span></dd></div>
+                        <div><dt>Trạng thái</dt><dd><span class="status-badge status-${order.status}"><c:out value="${order.status.label}"/></span></dd></div>
                     </dl>
                 </aside>
             </div>
@@ -70,7 +70,7 @@
                                     <tr>
                                         <td><a class="order-link" href="${pageContext.request.contextPath}/orders/detail?id=${o.orderId}">#<c:out value="${o.orderId}"/></a></td>
                                         <td><c:if test="${not empty o.createdAt and not empty dateTimeFormat}"><time datetime="${o.createdAt}"><c:out value="${o.createdAt.format(dateTimeFormat)}"/></time></c:if></td>
-                                        <td><span class="status-badge status-${o.status}"><app:enumLabel value="${o.status}"/></span></td>
+                                        <td><span class="status-badge status-${o.status}"><c:out value="${o.status.label}"/></span></td>
                                         <td class="numeric"><app:money amount="${o.total}"/></td>
                                         <td><a class="order-link" href="${pageContext.request.contextPath}/orders/detail?id=${o.orderId}">Chi tiết<span class="visually-hidden"> đơn #<c:out value="${o.orderId}"/></span></a></td>
                                     </tr>

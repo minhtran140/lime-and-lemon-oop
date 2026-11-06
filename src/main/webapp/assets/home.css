@@ -54,7 +54,7 @@
     max-width: 42ch;
     margin: 0 0 var(--spacing-xl);
     color: var(--color-text-muted);
-    font-size: 1.0625rem;
+    font-size: var(--text-body);
     line-height: 1.6;
 }
 
@@ -95,7 +95,7 @@
     margin: 0 0 var(--spacing-xs);
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    font-size: var(--text-title);
     font-weight: 500;
     letter-spacing: -0.025em;
     line-height: 1.2;
@@ -210,7 +210,8 @@
     background: var(--color-surface);
 }
 
-.home-band-texture {
+.home-band-texture,
+.home-footer-texture {
     position: absolute;
     z-index: -1;
     inset: 0;
@@ -253,7 +254,7 @@
     margin: 0 0 var(--spacing-xs);
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: 1.65rem;
+    font-size: var(--text-heading);
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -281,17 +282,6 @@
 
 .home-page .footer p {
     color: var(--color-text);
-}
-
-.home-footer-texture {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.08;
-    pointer-events: none;
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -367,7 +357,7 @@
         left: var(--spacing-xs);
         min-height: 44px;
         padding-inline: var(--spacing-sm);
-        font-size: 0.9rem;
+        font-size: var(--text-label);
     }
 
     .home-outfit-grid {

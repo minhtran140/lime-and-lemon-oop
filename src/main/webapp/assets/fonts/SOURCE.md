@@ -1,8 +1,8 @@
-# Geist fonts
+# Geist font
 
-`Geist.woff2` and `GeistMono.woff2` are the variable webfont files from Vercel's `vercel/geist-font` repository, pinned to commit `77f0563c03009d6c15c6342183fa53b352255b22`.
+`Geist.woff2` is the variable webfont file from Vercel's `vercel/geist-font` repository, pinned to commit `77f0563c03009d6c15c6342183fa53b352255b22`.
 
-The font files and this project bundle are covered by the SIL Open Font License 1.1. See [OFL.txt](OFL.txt) for the full license. The webfonts provide the Vietnamese glyphs needed by the storefront.
+The font file and this project bundle are covered by the SIL Open Font License 1.1. See [OFL.txt](OFL.txt) for the full license. The webfonts provide the Vietnamese glyphs needed by the storefront.
 
 # Newsreader
 

@@ -11,6 +11,7 @@ import com.clothingstore.exception.ValidationException;
 import com.clothingstore.repository.*;
 import com.clothingstore.service.CheckoutService;
 import com.clothingstore.service.OrderService;
+import com.clothingstore.service.ProductService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,7 @@ public class DatabaseTest {
     private OrderRepository orders;
     private OrderService orderService;
     private CheckoutService checkout;
+    private ProductService catalog;
     private Category category;
     private User customer;
     private static final ShippingAddress ADDRESS = new ShippingAddress("Test", "0901234567", "Test address");
@@ -51,16 +53,28 @@ public class DatabaseTest {
         schema = "test_" + UUID.randomUUID().toString().replace("-", "");
         try (var statement = owner.createStatement()) {
             statement.execute("CREATE SCHEMA " + schema);
-            statement.execute("SET search_path TO " + schema);
+            // Bảng luôn được tạo trong schema thử nghiệm (đứng đầu đường dẫn). Nếu extension unaccent đã có sẵn ở schema
+            // khác, "CREATE EXTENSION IF NOT EXISTS" không làm gì, nên phải để schema đó vào đường dẫn tìm kiếm.
+            statement.execute("SET search_path TO " + schema + ", public");
             statement.execute(Files.readString(Path.of("src/main/resources/db/schema.sql")));
         }
-        Database database = Database.direct(url + (url.contains("?") ? "&" : "?") + "currentSchema=" + schema,
+        // Hỏi thẳng nơi unaccent đang nằm: máy sạch thì nó nằm trong schema thử nghiệm (và bị DROP SCHEMA CASCADE xóa theo),
+        // máy đã có thì nằm ở schema cũ và không bao giờ bị đụng tới.
+        String extensionSchema = schema;
+        try (var statement = owner.createStatement(); var rows = statement.executeQuery(
+                "SELECT n.nspname FROM pg_extension e JOIN pg_namespace n ON n.oid=e.extnamespace WHERE e.extname='unaccent'")) {
+            if (rows.next()) extensionSchema = rows.getString(1);
+        }
+        String currentSchema = schema.equals(extensionSchema) ? schema : schema + "," + extensionSchema;
+        Database database = Database.direct(url + (url.contains("?") ? "&" : "?") + "currentSchema=" + currentSchema,
                 user, password);
         products = new ProductRepository(database);
         orders = new OrderRepository(database);
         orderService = new OrderService(orders, new UserRepository(database));
         checkout = new CheckoutService(products, orders, new MemberDiscountPolicy());
-        category = new CategoryRepository(database).insert(Category.create("Test"));
+        CategoryRepository categories = new CategoryRepository(database);
+        catalog = new ProductService(categories, products);
+        category = categories.insert(Category.create("Test"));
         customer = new UserRepository(database).insert(Customer.create("Test", "test@example.test", "hash"));
     }
 
@@ -113,10 +127,10 @@ public class DatabaseTest {
         Product product = product("100", 1000, 1000, 0);
         ProductSize s = size(product, "S"), m = size(product, "M");
         List<Order> toCancel = new ArrayList<>();
-        for (int i = 0; i < rounds; i++) toCancel.add(checkout.checkout(customer, cart(s, m), ADDRESS));
+        for (int i = 0; i < rounds; i++) toCancel.add(placeOrder(cart(s, m), ADDRESS));
         List<Throwable> failures = runTogether(
-                () -> { for (int i = 0; i < rounds; i++) checkout.checkout(customer, cart(s, m), ADDRESS); },
-                () -> { for (int i = 0; i < rounds; i++) checkout.checkout(customer, cart(m, s), ADDRESS); },
+                () -> { for (int i = 0; i < rounds; i++) placeOrder(cart(s, m), ADDRESS); },
+                () -> { for (int i = 0; i < rounds; i++) placeOrder(cart(m, s), ADDRESS); },
                 () -> toCancel.forEach(o -> orderService.changeStatus(o.getOrderId(), OrderStatus.CANCELLED)));
         assertEquals(List.of(), failures.stream().map(f -> f + " caused by " + f.getCause()).toList());
         assertEquals(1000 - 2 * rounds, size(product, "S").getStock());
@@ -202,7 +216,7 @@ public class DatabaseTest {
         Product product = product("6000000000", 2, 0, 0);
         Cart cart = new Cart();
         cart.addItem(size(product, "S"), 2);
-        assertThrows(ValidationException.class, () -> checkout.checkout(customer, cart, ADDRESS));
+        assertThrows(ValidationException.class, () -> placeOrder(cart, ADDRESS));
         assertEquals(2, size(product, "S").getStock());
         assertEquals(2, cart.getItems().get(0).getQuantity());
         assertTrue(orders.findAll().isEmpty());
@@ -215,10 +229,83 @@ public class DatabaseTest {
         cart.addItem(size(product, "S"), 2);
         cart.addItem(size(product, "M"), 1);
         products.updateStock(product.getProductId(), 2, 0, 0, 2, 1, 0);
-        assertThrows(OutOfStockException.class, () -> checkout.checkout(customer, cart, ADDRESS));
+        assertThrows(OutOfStockException.class, () -> placeOrder(cart, ADDRESS));
         assertEquals(2, size(product, "S").getStock());
         assertEquals(2, cart.getItems().size());
         assertTrue(orders.findAll().isEmpty());
+    }
+
+    @Test public void priceChangedAfterPreviewIsRejectedUntilTheCustomerConfirmsTheNewPrice() {
+        Product product = product("100", 5, 0, 0);
+        Cart cart = new Cart();
+        cart.addItem(size(product, "S"), 1);
+        String shown = CheckoutService.quoteOf(checkout.preview(customer, cart));
+        Product edit = reread(product);
+        changePrice(edit, "150", edit.getVersion());
+        ValidationException rejected = assertThrows(ValidationException.class,
+                () -> checkout.checkout(customer, cart, ADDRESS, shown));
+        assertEquals("summary", rejected.getField());
+        assertTrue(orders.findAll().isEmpty());
+        assertEquals(5, size(product, "S").getStock());
+        assertEquals(1, cart.getItems().get(0).getQuantity());
+        Order order = placeOrder(cart, ADDRESS);
+        assertEquals(0, new java.math.BigDecimal("150").compareTo(order.getItems().get(0).getUnitPrice()));
+    }
+
+    @Test public void checkoutWithoutAQuoteOrWithAChangedQuantityIsRejected() {
+        Product product = product("100", 5, 0, 0);
+        Cart cart = new Cart();
+        cart.addItem(size(product, "S"), 1);
+        ValidationException noQuote = assertThrows(ValidationException.class,
+                () -> checkout.checkout(customer, cart, ADDRESS, null));
+        assertEquals("summary", noQuote.getField());
+        String shown = CheckoutService.quoteOf(checkout.preview(customer, cart));
+        cart.addItem(size(product, "S"), 1);
+        ValidationException changed = assertThrows(ValidationException.class,
+                () -> checkout.checkout(customer, cart, ADDRESS, shown));
+        assertEquals("summary", changed.getField());
+        assertTrue(orders.findAll().isEmpty());
+        assertEquals(5, size(product, "S").getStock());
+    }
+
+    @Test public void staleProductFormCannotOverwriteALaterEdit() {
+        Product product = product("100", 1, 0, 0);
+        Product first = reread(product), second = reread(product);
+        changePrice(first, "200", first.getVersion());
+        ValidationException stale = assertThrows(ValidationException.class,
+                () -> changePrice(second, "300", second.getVersion()));
+        assertEquals("version", stale.getField());
+        assertEquals(0, new java.math.BigDecimal("200").compareTo(reread(product).getPrice()));
+        Product fresh = reread(product);
+        changePrice(fresh, "300", fresh.getVersion());
+        assertEquals(0, new java.math.BigDecimal("300").compareTo(reread(product).getPrice()));
+    }
+
+    /**
+     * Cửa sổ đua thật (đọc rồi ghi cả dòng) không tái hiện được trong một test đơn luồng, nên test này chỉ kiểm tra
+     * những gì quan sát được: chỉ cột active đổi, và dòng được tăng phiên bản nên form admin mở trước đó bị từ chối.
+     */
+    @Test public void deactivateChangesOnlyActiveAndBumpsTheVersion() {
+        Product product = product("100", 1, 0, 0);
+        Product edit = reread(product);
+        edit.changeDescription("Mô tả");
+        edit.changeFeatured(true);
+        products.update(edit, edit.getVersion());
+        Product staleForm = reread(product);
+        Product deactivated = catalog.deactivateProduct(product.getProductId());
+        assertFalse(deactivated.isActive());
+        Product saved = reread(product);
+        assertFalse(saved.isActive());
+        assertEquals(edit.getName(), saved.getName());
+        assertEquals("Mô tả", saved.getDescription());
+        assertTrue(saved.isFeatured());
+        assertEquals(0, new java.math.BigDecimal("100").compareTo(saved.getPrice()));
+        assertNotEquals(staleForm.getVersion(), saved.getVersion());
+        staleForm.activate();
+        ValidationException stale = assertThrows(ValidationException.class,
+                () -> products.update(staleForm, staleForm.getVersion()));
+        assertEquals("version", stale.getField());
+        assertFalse(reread(product).isActive());
     }
 
     // Dữ liệu demo chỉ dùng ảnh .webp có thật trong thư mục webapp.
@@ -239,12 +326,12 @@ public class DatabaseTest {
     @Test public void imageMigrationOnlyReplacesKnownPathsAndIsRepeatable() throws Exception {
         Product old = product("100", 1, 0, 0);
         old.changeImageUrl("/assets/products/ao-hoodie-xam-ai.png");
-        products.update(old);
+        products.update(old, old.getVersion());
         Product custom = product("100", 1, 0, 0);
         custom.changeImageUrl("https://example.test/custom.png");
-        products.update(custom);
+        products.update(custom, custom.getVersion());
         Map<Long, String> before = new HashMap<>();
-        products.findAllForAdmin().forEach(p -> before.put(p.getProductId(), p.getName()));
+        products.searchForAdmin(null, null).forEach(p -> before.put(p.getProductId(), p.getName()));
         String sql = Files.readString(Path.of("src/main/resources/db/migrations/20261027-product-webp.sql"));
         try (var statement = owner.createStatement()) {
             statement.execute(sql);
@@ -253,8 +340,8 @@ public class DatabaseTest {
         assertEquals("/assets/products/home/ao-hoodie-xam-20261007.webp",
                 products.findById(old.getProductId()).orElseThrow().getImageUrl());
         assertEquals("https://example.test/custom.png", products.findById(custom.getProductId()).orElseThrow().getImageUrl());
-        assertEquals(before.size(), products.findAllForAdmin().size());
-        products.findAllForAdmin().forEach(p -> assertEquals(before.get(p.getProductId()), p.getName()));
+        assertEquals(before.size(), products.searchForAdmin(null, null).size());
+        products.searchForAdmin(null, null).forEach(p -> assertEquals(before.get(p.getProductId()), p.getName()));
     }
 
     // Tìm kiếm không phân biệt dấu ("ao" ra "áo"); % và _ được xem là ký tự bình thường (không phải ký tự đại diện).
@@ -316,7 +403,22 @@ public class DatabaseTest {
     private Order buy(Product product, int quantity, ShippingAddress address) {
         Cart cart = new Cart();
         cart.addItem(size(product, "S"), quantity);
-        return checkout.checkout(customer, cart, address);
+        return placeOrder(cart, address);
+    }
+
+    /** Giống trang đặt hàng: khách xem trước đơn, rồi xác nhận đúng những gì đã hiển thị. */
+    private Order placeOrder(Cart cart, ShippingAddress address) {
+        return checkout.checkout(customer, cart, address, CheckoutService.quoteOf(checkout.preview(customer, cart)));
+    }
+
+    /** Admin sửa như form sản phẩm: dòng vừa đọc, đổi một giá, lưu kèm phiên bản đã đọc. */
+    private void changePrice(Product readEarlier, String price, long version) {
+        readEarlier.changePrice(new java.math.BigDecimal(price));
+        products.update(readEarlier, version);
+    }
+
+    private Product reread(Product product) {
+        return products.findById(product.getProductId()).orElseThrow();
     }
 
     /** Mỗi size một cái, theo đúng thứ tự dòng hàng được truyền vào. */

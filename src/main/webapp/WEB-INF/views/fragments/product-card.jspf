@@ -8,11 +8,13 @@
 <c:set var="cardTag" value="${empty cardHeading ? 'h3' : cardHeading}"/>
 <c:set var="cardImage" value="${product.imageUrl}"/>
 <c:set var="cardSrcset" value=""/>
-<%-- Ảnh demo trong /assets/products/ có bản đôi "-small" rộng 600px; URL ngoài do admin nhập thì giữ src thường. --%>
+<%-- Chỉ ảnh có bản "-small" thật sự tồn tại trên đĩa (map smallProductImages, nạp lúc khởi động) mới có srcset;
+     ảnh admin tự nhập hoặc ảnh ngoài không có bản nhỏ thì dùng src thường, tránh 404. --%>
 <c:if test="${not empty product.imageUrl and fn:startsWith(product.imageUrl, '/assets/')}">
     <c:set var="cardImage" value="${pageContext.request.contextPath}${product.imageUrl}"/>
-    <c:if test="${fn:startsWith(product.imageUrl, '/assets/products/') and fn:endsWith(product.imageUrl, '.webp') and not fn:endsWith(product.imageUrl, '-small.webp')}">
-        <c:set var="cardSrcset" value="${pageContext.request.contextPath}${fn:replace(product.imageUrl, '.webp', '-small.webp')} 600w, ${cardImage} 1200w"/>
+    <c:set var="cardSmall" value="${applicationScope.smallProductImages[product.imageUrl]}"/>
+    <c:if test="${not empty cardSmall}">
+        <c:set var="cardSrcset" value="${pageContext.request.contextPath}${cardSmall} 600w, ${cardImage} 1200w"/>
     </c:if>
 </c:if>
 <article class="product-card">

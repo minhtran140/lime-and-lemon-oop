@@ -2,8 +2,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="isRegister" value="${accountMode == 'register'}"/>
-<c:set var="formErrorText" value="${isRegister ? registrationError : loginError}"/>
-<c:set var="emailValue" value="${isRegister ? registrationEmail : loginEmail}"/>
 <%-- Id cho aria-describedby của ô mật khẩu: gợi ý mật khẩu (chỉ khi đăng ký) cộng với lỗi mật khẩu (nếu có), cách nhau bằng dấu cách. --%>
 <c:set var="passwordDescribedBy" value="${isRegister ? 'password-hint' : ''}${errorField eq 'password' ? (isRegister ? ' password-error' : 'password-error') : ''}"/>
 <!doctype html>
@@ -30,10 +28,10 @@
             <c:otherwise>Đăng nhập để đặt hàng và theo dõi đơn của bạn.</c:otherwise>
         </c:choose></p>
 
-        <c:if test="${not empty formErrorText}">
+        <c:if test="${not empty formError}">
             <div class="form-error-summary" tabindex="-1" autofocus data-focus-error-summary role="alert" aria-labelledby="account-error-title">
                 <h2 id="account-error-title"><c:choose><c:when test="${isRegister}">Vui lòng kiểm tra thông tin đăng ký</c:when><c:otherwise>Chưa đăng nhập được</c:otherwise></c:choose></h2>
-                <p><c:out value="${formErrorText}"/></p>
+                <p><c:out value="${formError}"/></p>
             </div>
         </c:if>
 
@@ -41,19 +39,19 @@
             <p class="form-required-note">Tất cả các mục đều bắt buộc.</p>
             <c:if test="${isRegister}">
                 <label for="fullName">Họ và tên
-                    <input id="fullName" name="fullName" required maxlength="120" autocomplete="name" value="<c:out value='${registrationFullName}'/>"<c:if test="${errorField eq 'fullName'}"> aria-invalid="true" aria-describedby="fullName-error"</c:if>>
+                    <input id="fullName" name="fullName" required maxlength="120" autocomplete="name" value="<c:out value='${submitted.fullName}'/>"<c:if test="${errorField eq 'fullName'}"> aria-invalid="true" aria-describedby="fullName-error"</c:if>>
                 </label>
-                <c:if test="${errorField eq 'fullName'}"><p class="field-error" id="fullName-error"><c:out value="${formErrorText}"/></p></c:if>
+                <c:if test="${errorField eq 'fullName'}"><p class="field-error" id="fullName-error"><c:out value="${formError}"/></p></c:if>
             </c:if>
             <label for="email">Email
-                <input id="email" type="email" name="email" required maxlength="254" autocomplete="email" value="<c:out value='${emailValue}'/>"<c:if test="${errorField eq 'email'}"> aria-invalid="true" aria-describedby="email-error"</c:if>>
+                <input id="email" type="email" name="email" required maxlength="254" autocomplete="email" value="<c:out value='${submitted.email}'/>"<c:if test="${errorField eq 'email'}"> aria-invalid="true" aria-describedby="email-error"</c:if>>
             </label>
-            <c:if test="${errorField eq 'email'}"><p class="field-error" id="email-error"><c:out value="${formErrorText}"/></p></c:if>
+            <c:if test="${errorField eq 'email'}"><p class="field-error" id="email-error"><c:out value="${formError}"/></p></c:if>
             <label for="password">Mật khẩu
                 <input id="password" type="password" name="password" required <c:if test="${isRegister}">minlength="6"</c:if><c:if test="${not isRegister}">minlength="1"</c:if> maxlength="128" autocomplete="${isRegister ? 'new-password' : 'current-password'}"<c:if test="${not empty passwordDescribedBy}"> aria-describedby="${passwordDescribedBy}"</c:if><c:if test="${errorField eq 'password'}"> aria-invalid="true"</c:if>>
                 <c:if test="${isRegister}"><span class="field-hint" id="password-hint">Ít nhất 6 ký tự.</span></c:if>
             </label>
-            <c:if test="${errorField eq 'password'}"><p class="field-error" id="password-error"><c:out value="${formErrorText}"/></p></c:if>
+            <c:if test="${errorField eq 'password'}"><p class="field-error" id="password-error"><c:out value="${formError}"/></p></c:if>
             <button class="button-primary" type="submit" <c:choose><c:when test="${isRegister}">data-busy-label="Đang tạo tài khoản…">Tạo tài khoản</c:when><c:otherwise>data-busy-label="Đang đăng nhập…">Đăng nhập</c:otherwise></c:choose></button>
         </form>
         <p class="account-switch"><c:choose>

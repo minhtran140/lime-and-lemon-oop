@@ -64,7 +64,7 @@ Cần JDK 21, Maven 3.9, Tomcat 10.1 và PostgreSQL 17 chạy ở cổng 5432 v�
    psql -U postgres -d lime_and_lemon -f src/main/resources/db/schema.sql -f src/main/resources/db/demo-catalog.sql
    ```
 
-2. Nếu tài khoản hoặc mật khẩu khác, sửa cả hai file. `src/main/webapp/META-INF/context.xml` khai báo connection pool mà Tomcat dùng; `src/main/resources/db.properties` dùng khi chạy test và khi ứng dụng chạy ngoài Tomcat.
+2. Nếu tài khoản hoặc mật khẩu khác, sửa `src/main/webapp/META-INF/context.xml`, nơi khai báo connection pool mà Tomcat dùng. Test không đọc file này; chúng nhận `-Dtest.db.url`, `-Dtest.db.user` và `-Dtest.db.password`.
 3. Chạy `mvn clean package`, chép `target/ROOT.war` vào thư mục `webapps` của Tomcat (xóa thư mục `ROOT` mặc định đi), khởi động Tomcat rồi mở `http://localhost:8080/`.
 
 Nếu log Tomcat báo `invalid value for parameter "TimeZone": "Asia/Saigon"`, hãy chạy JVM ở múi giờ UTC rồi khởi động lại Tomcat (PowerShell: `$env:CATALINA_OPTS = '-Duser.timezone=UTC'`). Java trên Windows gọi múi giờ Việt Nam bằng tên cũ `Asia/Saigon` và driver JDBC gửi tên đó khi kết nối, nhưng PostgreSQL 17 trong image Docker (Debian) chỉ còn tên mới `Asia/Ho_Chi_Minh`. Giờ hiển thị vẫn đúng vì database lưu giờ UTC và `Order.getCreatedAt()` tự đổi sang giờ Việt Nam.
@@ -106,7 +106,7 @@ src/main/java/com/clothingstore/
   repository/    toàn bộ câu SQL (JDBC)
   service/       nghiệp vụ
   web/           filter và servlet
-src/main/resources/      db.properties, db/schema.sql, db/demo-catalog.sql, db/migrations/
+src/main/resources/      db/schema.sql, db/demo-catalog.sql, db/migrations/
 src/main/webapp/META-INF/context.xml   connection pool (Tomcat DBCP2)
 src/main/webapp/         JSP (WEB-INF/views), CSS, JS và ảnh (assets)
 src/test/java/           OopDemo, StoreRulesTest, DatabaseTest

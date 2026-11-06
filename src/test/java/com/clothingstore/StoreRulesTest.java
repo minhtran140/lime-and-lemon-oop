@@ -1,5 +1,6 @@
 package com.clothingstore;
 
+import com.clothingstore.config.AppContextListener;
 import com.clothingstore.domain.cart.Cart;
 import com.clothingstore.domain.order.Order;
 import com.clothingstore.domain.order.OrderItem;
@@ -12,6 +13,7 @@ import com.clothingstore.domain.user.User;
 import com.clothingstore.exception.OutOfStockException;
 import com.clothingstore.exception.ValidationException;
 import com.clothingstore.repository.ProductRepository;
+import com.clothingstore.service.CheckoutService;
 import com.clothingstore.web.WebSupport;
 import com.clothingstore.web.filter.SameOriginFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -152,6 +155,37 @@ public class StoreRulesTest {
     // Làm tròn giá giống cách database làm tròn.
     @Test public void priceUsesTheSameRoundingAsDatabase() {
         assertEquals(new BigDecimal("1.24"), product("1.235").getPrice());
+    }
+
+    @Test public void priceIsRoundedBeforeItMustBeAboveZero() {
+        for (String tooSmall : new String[]{"0.001", "0.004"}) {
+            assertEquals(tooSmall, "price", assertThrows(ValidationException.class, () -> product(tooSmall)).getField());
+        }
+        assertEquals(new BigDecimal("0.01"), product("0.005").getPrice());
+    }
+
+    @Test public void imageUrlHasAtMost1000Characters() {
+        String exactly1000 = "https://e.test/" + "a".repeat(1000 - "https://e.test/".length());
+        assertEquals(exactly1000, Product.create(Category.create("Test"), "Product", null, "Black", BigDecimal.TEN, exactly1000).getImageUrl());
+        ValidationException tooLong = assertThrows(ValidationException.class,
+                () -> Product.create(Category.create("Test"), "Product", null, "Black", BigDecimal.TEN, exactly1000 + "a"));
+        assertEquals("imageUrl", tooLong.getField());
+    }
+
+    @Test public void smallImageIsOfferedOnlyWhenBothFilesExist() {
+        Map<String, String> twins = AppContextListener.smallImageTwins(Set.of(
+                "/assets/products/home/a.webp", "/assets/products/home/a-small.webp",
+                "/assets/products/home/b.webp", "/assets/products/home/c-small.webp",
+                "/assets/products/home/d.png", "/assets/products/home/d-small.png"));
+        assertEquals(Map.of("/assets/products/home/a.webp", "/assets/products/home/a-small.webp"), twins);
+    }
+
+    @Test public void quoteTextChangesWithPriceAndQuantityNotWithScale() {
+        Order order = orderWith(line(1, 2, "100"));
+        String quote = CheckoutService.quoteOf(order);
+        assertEquals(quote, CheckoutService.quoteOf(orderWith(line(1, 2, "100.00"))));
+        assertNotEquals(quote, CheckoutService.quoteOf(orderWith(line(1, 2, "100.01"))));
+        assertNotEquals(quote, CheckoutService.quoteOf(orderWith(line(1, 3, "100"))));
     }
 
     // Giờ lưu là UTC, khi hiển thị đổi sang giờ Việt Nam (có thể sang ngày hôm sau).

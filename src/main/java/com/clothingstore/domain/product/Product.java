@@ -15,6 +15,7 @@ public final class Product {
     private String imageUrl;
     private boolean active = true;
     private boolean featured;
+    private long version;
 
     private Product(Category category, String name, String description, String color) {
         changeCategory(category);
@@ -55,7 +56,11 @@ public final class Product {
 
     public boolean isSellable() { return active; }
 
+    /** Đổi mỗi khi dòng được cập nhật trong database (dùng để phát hiện form sửa đã cũ); bằng 0 cho tới khi đọc từ database. */
+    public long getVersion() { return version; }
+
     public void assignId(long id) { productId = id; }
+    public void assignVersion(long value) { version = value; }
 
     public void rename(String value) { name = required(value, "Tên sản phẩm", 160, "name"); }
     public void changeColor(String value) { color = required(value, "Màu", 40, "color"); }
@@ -68,18 +73,23 @@ public final class Product {
     /** Rỗng (không có ảnh), địa chỉ https://, hoặc đường dẫn dưới /assets/. */
     public void changeImageUrl(String value) {
         String url = value == null ? "" : value.trim();
+        // Cột image_url là VARCHAR(1000): kiểm tra ở đây để admin nhận thông báo rõ ràng thay vì lỗi cơ sở dữ liệu.
+        if (url.length() > 1000) throw new ValidationException("Địa chỉ ảnh không được dài quá 1000 ký tự.", "imageUrl");
         boolean ok = url.isEmpty() || url.startsWith("/assets/") || (url.startsWith("https://") && url.length() > 8);
         if (!ok) throw new ValidationException("Địa chỉ ảnh cần bắt đầu bằng https:// hoặc /assets/.", "imageUrl");
         imageUrl = url.isEmpty() ? null : url;
     }
 
     public void changePrice(BigDecimal value) {
-        if (value == null || value.signum() <= 0) throw new ValidationException("Giá phải lớn hơn 0.", "price");
+        if (value == null) throw new ValidationException("Giá phải lớn hơn 0.", "price");
+        // Làm tròn trước rồi mới kiểm tra: 0.004 thành 0.00 nên bị từ chối, 9999999999.995 thành 10000000000.00 nên vượt giới hạn.
+        BigDecimal rounded = value.setScale(2, RoundingMode.HALF_UP);
+        if (rounded.signum() <= 0) throw new ValidationException("Giá phải lớn hơn 0.", "price");
         // Giới hạn này khớp cột price NUMERIC(12,2) trong schema.sql (tối đa 10 chữ số phần nguyên).
-        if (value.compareTo(new BigDecimal("9999999999.99")) > 0) {
+        if (rounded.compareTo(new BigDecimal("9999999999.99")) > 0) {
             throw new ValidationException("Giá không được vượt quá 9.999.999.999 đồng.", "price");
         }
-        price = value.setScale(2, RoundingMode.HALF_UP);
+        price = rounded;
     }
     public void changeFeatured(boolean value) { featured = value; }
     public void deactivate() { active = false; }

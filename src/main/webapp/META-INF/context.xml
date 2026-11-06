@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Connection pool (DBCP2 có sẵn trong Tomcat). Database.java tra cứu nó với tên java:comp/env/jdbc/LimeAndLemon.
-     Khi build Docker, localhost:5432 được đổi thành db:5432 ở đây và trong db.properties (các test dùng file đó). -->
+     Khi build Docker, localhost:5432 được đổi thành db:5432 ở đây. -->
 <Context>
     <Resource name="jdbc/LimeAndLemon" auth="Container" type="javax.sql.DataSource"
               factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"

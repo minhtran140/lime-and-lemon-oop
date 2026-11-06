@@ -12,7 +12,6 @@ public final class ValidationException extends ApplicationException {
         super(message);
         this.field = field;
     }
-    public ValidationException(String message, Throwable cause) { this(message, null, cause); }
     public ValidationException(String message, String field, Throwable cause) {
         super(message, cause);
         this.field = field;

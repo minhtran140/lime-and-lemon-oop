@@ -64,8 +64,6 @@ public final class AccountServlet extends HttpServlet {
         } catch (ValidationException exception) {
             // Hiện lại form kèm lý do và email đã gõ (không bao giờ gồm mật khẩu).
             request.setAttribute("accountMode", "login");
-            request.setAttribute("loginError", exception.getMessage());
-            request.setAttribute("loginEmail", request.getParameter("email"));
             WebSupport.formError(request, exception);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             request.getRequestDispatcher("/WEB-INF/views/account.jsp").forward(request, response);
@@ -82,9 +80,6 @@ public final class AccountServlet extends HttpServlet {
         } catch (ValidationException exception) {
             // Hiện lại form kèm lý do và những gì khách đã gõ (không bao giờ gồm mật khẩu).
             request.setAttribute("accountMode", "register");
-            request.setAttribute("registrationError", exception.getMessage());
-            request.setAttribute("registrationFullName", request.getParameter("fullName"));
-            request.setAttribute("registrationEmail", request.getParameter("email"));
             WebSupport.formError(request, exception);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             request.getRequestDispatcher("/WEB-INF/views/account.jsp").forward(request, response);

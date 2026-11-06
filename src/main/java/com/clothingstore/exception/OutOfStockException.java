@@ -4,12 +4,8 @@ package com.clothingstore.exception;
 public final class OutOfStockException extends ApplicationException {
     private static final long serialVersionUID = 1L;
 
-    /** Size bị thiếu hàng; bằng 0 khi nơi gọi không nói rõ. */
+    /** Size bị thiếu hàng. */
     private final long sizeId;
-
-    public OutOfStockException(String productName, String size, int requested, int available) {
-        this(0, productName, size, requested, available);
-    }
 
     public OutOfStockException(long sizeId, String productName, String size, int requested, int available) {
         super(available == 0

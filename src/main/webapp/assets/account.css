@@ -55,7 +55,7 @@
     gap: var(--spacing-xs);
     color: var(--color-heading);
     font-family: var(--font-serif);
-    font-size: 20px;
+    font-size: var(--text-subhead);
     font-weight: 500;
 }
 
@@ -75,7 +75,7 @@
 .account-story-kicker {
     margin-bottom: var(--spacing-sm);
     color: var(--color-accent);
-    font-size: 12px;
+    font-size: var(--text-caption);
     font-weight: 600;
     letter-spacing: 0.12em;
 }
@@ -95,7 +95,7 @@
     max-width: 38ch;
     margin-bottom: 0;
     color: var(--color-text-muted);
-    font-size: 16px;
+    font-size: var(--text-body);
     line-height: 1.55;
 }
 
@@ -153,12 +153,12 @@
 .account-form input {
     min-height: 44px;
     padding-inline: var(--spacing-sm);
-    font-size: 16px;
+    font-size: var(--text-body);
 }
 
 .account-form .field-hint {
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: var(--text-eyebrow);
     font-weight: 400;
     line-height: 1.4;
 }
@@ -173,7 +173,7 @@
     border-top: 1px solid var(--color-border);
     padding-top: var(--spacing-md);
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: var(--text-label);
     text-align: center;
 }
 

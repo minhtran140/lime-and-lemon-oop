@@ -6,7 +6,7 @@ public enum OrderStatus {
 
     OrderStatus(String label) { this.label = label; }
 
-    /** Tên tiếng Việt hiển thị cho người dùng (trong thông báo; các trang dùng thẻ enumLabel). */
+    /** Tên tiếng Việt hiển thị cho người dùng. */
     public String getLabel() { return label; }
 
     public boolean allows(OrderStatus next) {

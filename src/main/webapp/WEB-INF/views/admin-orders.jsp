@@ -41,7 +41,7 @@
         <nav class="admin-chips" aria-label="Lọc đơn theo trạng thái">
             <a class="chip" href="${ctx}/admin/orders#don-hang"<c:if test="${empty statusFilter}"> aria-current="true"</c:if>>Tất cả</a>
             <c:forEach items="${orderStatuses}" var="status">
-                <a class="chip" href="${ctx}/admin/orders?status=${status}#don-hang"<c:if test="${statusFilter eq status.name()}"> aria-current="true"</c:if>><app:enumLabel value="${status}"/></a>
+                <a class="chip" href="${ctx}/admin/orders?status=${status}#don-hang"<c:if test="${statusFilter eq status.name()}"> aria-current="true"</c:if>><c:out value="${status.label}"/></a>
             </c:forEach>
         </nav>
         <div class="admin-table-wrap">
@@ -61,7 +61,7 @@
                         <td data-label="Ngày đặt" class="admin-half"><c:choose><c:when test="${empty order.createdAt}">—</c:when><c:otherwise>${order.createdAt.format(dateTimeFormat)}</c:otherwise></c:choose></td>
                         <td data-label="Người nhận" class="admin-half"><c:out value="${order.shippingAddress.recipientName}"/></td>
                         <td class="admin-numeric admin-stock admin-half" data-label="Tổng"><app:money amount="${order.total}"/></td>
-                        <td data-label="Trạng thái"><span class="status-badge status-${order.status}"><app:enumLabel value="${order.status}"/></span></td>
+                        <td data-label="Trạng thái"><span class="status-badge status-${order.status}"><c:out value="${order.status.label}"/></span></td>
                         <td data-label="Cập nhật trạng thái">
                             <div class="admin-actions admin-actions-start">
                                 <c:if test="${canMove}">
@@ -70,7 +70,7 @@
                                         <input type="hidden" name="returnTo" value="<c:out value='${ordersUrl}'/>">
                                         <label class="visually-hidden" for="order-status-${order.orderId}">Trạng thái đơn #<c:out value="${order.orderId}"/></label>
                                         <select id="order-status-${order.orderId}" name="status"><c:forEach items="${orderStatuses}" var="status"><c:if test="${status == order.status or (order.status.allows(status) and status.name() ne 'CANCELLED')}">
-                                            <option value="${status}"<c:if test="${status == order.status}"> selected</c:if>><app:enumLabel value="${status}"/></option>
+                                            <option value="${status}"<c:if test="${status == order.status}"> selected</c:if>><c:out value="${status.label}"/></option>
                                         </c:if></c:forEach></select>
                                         <button class="button secondary button-small" type="submit" data-save>Cập nhật<span class="visually-hidden"> đơn #<c:out value="${order.orderId}"/></span></button>
                                     </form>

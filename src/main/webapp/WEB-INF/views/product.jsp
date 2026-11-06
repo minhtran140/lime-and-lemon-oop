@@ -5,6 +5,12 @@
 <c:set var="productImageUrl" value="${details.product.imageUrl}"/>
 <c:if test="${not empty details.product.imageUrl and fn:startsWith(details.product.imageUrl, '/assets/')}">
     <c:url var="productImageUrl" value="${details.product.imageUrl}"/>
+    <%-- Chỉ ảnh có bản "-small" thật sự tồn tại trên đĩa (map smallProductImages, nạp lúc khởi động) mới có srcset. --%>
+    <c:set var="smallImage" value="${applicationScope.smallProductImages[details.product.imageUrl]}"/>
+    <c:if test="${not empty smallImage}">
+        <c:url var="smallImageUrl" value="${smallImage}"/>
+        <c:set var="productSrcset" value="${smallImageUrl} 600w, ${productImageUrl} 1200w"/>
+    </c:if>
 </c:if>
 <%-- Chọn size: lấy size từ ?size= nếu còn hàng; không có ?size= thì lấy size còn hàng đầu tiên.
      Size trong URL không hợp lệ hoặc hết hàng thì để không chọn size nào, không tự thay bằng size khác. --%>
@@ -44,7 +50,7 @@
     <div class="detail-grid<c:if test='${empty details.product.imageUrl}'> detail-grid--no-image</c:if>">
         <div class="product-art product-art--detail<c:if test='${empty details.product.imageUrl}'> product-art--empty</c:if>">
             <c:choose>
-                <c:when test="${not empty details.product.imageUrl}"><img src="<c:out value='${productImageUrl}'/>" alt="<c:out value='${details.product.name}'/>" width="800" height="1000" decoding="async" onerror="this.onerror=null;this.hidden=true;this.nextElementSibling.hidden=false"><span class="product-art-note image-fallback" role="status" aria-live="polite" hidden>Không thể tải ảnh</span></c:when>
+                <c:when test="${not empty details.product.imageUrl}"><img src="<c:out value='${productImageUrl}'/>"<c:if test="${not empty productSrcset}"> srcset="<c:out value='${productSrcset}'/>" sizes="(max-width: 840px) min(100vw - 48px, 512px), min(48vw, 576px)"</c:if> alt="<c:out value='${details.product.name}'/>" width="800" height="1000" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.hidden=true;this.nextElementSibling.hidden=false"><span class="product-art-note image-fallback" role="status" aria-live="polite" hidden>Không thể tải ảnh</span></c:when>
                 <c:otherwise><span class="product-art-note">Chưa có ảnh</span></c:otherwise>
             </c:choose>
         </div>

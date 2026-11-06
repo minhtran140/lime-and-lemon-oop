@@ -35,8 +35,25 @@ public final class CheckoutService {
         return buildOrder(customer, cart, null);
     }
 
-    /** Lưu đơn và làm trống giỏ. OutOfStockException (từ câu UPDATE kho) nghĩa là chưa lưu gì. */
-    public Order checkout(User customer, Cart cart, ShippingAddress address) {
+    /**
+     * Chuỗi gồm mã size (sizeId), số lượng và đơn giá của từng dòng, cộng giảm giá và tổng tiền: các con số quyết định
+     * số tiền khách trả. Chỉ dùng để so sánh với đơn dựng lại lúc đặt; giá thật luôn lấy từ cơ sở dữ liệu.
+     */
+    public static String quoteOf(Order order) {
+        StringBuilder quote = new StringBuilder();
+        for (OrderItem item : order.getItems()) {
+            quote.append(item.getSizeId()).append(" x ").append(item.getQuantity()).append(" @ ")
+                    .append(item.getUnitPrice().stripTrailingZeros().toPlainString()).append(';');
+        }
+        return quote.append("discount ").append(order.getDiscount().stripTrailingZeros().toPlainString())
+                .append(" total ").append(order.getTotal().stripTrailingZeros().toPlainString()).toString();
+    }
+
+    /**
+     * Lưu đơn và làm trống giỏ. OutOfStockException (từ câu UPDATE kho) nghĩa là chưa lưu gì.
+     * confirmedQuote là quoteOf của đơn mà khách đã xem; nếu giá hoặc số lượng đã đổi từ lúc đó thì từ chối, để khách xem lại.
+     */
+    public Order checkout(User customer, Cart cart, ShippingAddress address, String confirmedQuote) {
         // Bấm đúp sẽ gửi hai lần thanh toán cho cùng một giỏ; lock làm lần thứ hai thấy giỏ đã trống.
         // Giới hạn: lock theo từng giỏ trong một JVM; chạy hai node Tomcat thì cần chốt chặn ở phía database.
         synchronized (cart) {
@@ -51,6 +68,14 @@ public final class CheckoutService {
             // 9999999999.99 là giá trị lớn nhất của cột NUMERIC(12,2) trong schema.sql.
             if (order.getSubtotal().compareTo(new BigDecimal("9999999999.99")) > 0) {
                 throw new ValidationException("Giá trị giỏ hàng quá lớn. Vui lòng giảm số lượng trước khi đặt hàng.");
+            }
+            // Giữa lúc khách mở trang và lúc bấm Đặt hàng, giá có thể đổi: không bao giờ thu tiền khác với con số khách đã xem.
+            if (confirmedQuote == null) {
+                throw new ValidationException("Vui lòng xem lại đơn hàng rồi bấm Đặt hàng để xác nhận.", "summary");
+            }
+            if (!quoteOf(order).equals(confirmedQuote)) {
+                throw new ValidationException("Giá hoặc số lượng trong đơn đã thay đổi so với lúc bạn mở trang. "
+                        + "Vui lòng xem lại phần “Đơn của bạn” rồi bấm Đặt hàng lần nữa.", "summary");
             }
             orders.placeOrder(order);
             cart.clear();

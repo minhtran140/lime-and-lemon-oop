@@ -215,6 +215,9 @@
                         <td class="admin-col-actions" data-label="Thao tác">
                             <form id="${formId}" class="admin-actions" method="post" action="${ctx}/admin/product/update">
                                 <input type="hidden" name="productId" value="${pid}">
+                                <%-- Lỗi nhập thường: giữ version lúc admin bắt đầu sửa để lần lưu sau vẫn phát hiện sửa đồng thời.
+                                     Lỗi xung đột (rf = version): mang version mới nhất để bấm "Lưu" lần nữa là ghi đè có chủ ý. --%>
+                                <input type="hidden" name="version" value="<c:out value='${failed and rf ne "version" ? submitted.version : product.version}'/>">
                                 <input type="hidden" name="returnTo" value="<c:out value='${listUrl}'/>">
                                 <button class="button secondary" type="submit" data-save>Lưu<span class="visually-hidden"> <c:out value="${product.name}"/></span></button>
                                 <c:choose>

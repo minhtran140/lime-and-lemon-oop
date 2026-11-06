@@ -22,7 +22,7 @@ import java.util.Set;
 public final class ProductRepository extends JdbcSupport {
     private static final String PRODUCT_COLUMNS =
             "p.product_id,p.name AS product_name,p.description,p.color,p.price,p.image_url,p.active AS product_active,"
-            + "p.featured," + CategoryRepository.COLUMNS;
+            + "p.featured,p.xmin::text::bigint AS product_version," + CategoryRepository.COLUMNS;
     private static final String PRODUCT_FROM =
             " FROM products p JOIN categories c ON c.category_id=p.category_id ";
     private static final String SIZE_SELECT = "SELECT " + PRODUCT_COLUMNS + ",s.size_id,s.size,s.stock" + PRODUCT_FROM
@@ -58,7 +58,6 @@ public final class ProductRepository extends JdbcSupport {
                 "ORDER BY p.product_id DESC");
     }
 
-    public List<Product> findAllForAdmin() { return searchForAdmin(null, null); }
 
     private List<Product> search(String operation, String where, String keyword, Long categoryId, String order) {
         String sql = "SELECT " + PRODUCT_COLUMNS + PRODUCT_FROM + where;
@@ -205,17 +204,48 @@ public final class ProductRepository extends JdbcSupport {
                 }
                 statement.executeBatch();
             }
+            // Đọc phiên bản của dòng vừa chèn (cùng giao dịch) để update(product, product.getVersion()) dùng được ngay.
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT xmin::text::bigint FROM products WHERE product_id=?")) {
+                statement.setLong(1, product.getProductId());
+                try (ResultSet row = statement.executeQuery()) {
+                    row.next();
+                    product.assignVersion(row.getLong(1));
+                }
+            }
             return product;
         });
     }
 
-    public void update(Product product) {
+    /**
+     * Chỉ lưu nếu dòng sản phẩm chưa bị ai sửa kể từ lúc admin mở form. "Phiên bản" của dòng là cột hệ thống xmin của
+     * PostgreSQL: nó đổi mỗi khi dòng được UPDATE, nên không cần thêm cột hay migration. Form gửi lại phiên bản đã đọc;
+     * nếu không còn khớp thì đã có người khác sửa, và ta không ghi đè lên thay đổi của họ.
+     */
+    public void update(Product product, long expectedVersion) {
         withConnection("update product", connection -> {
             String sql = "UPDATE products SET category_id=?,name=?,description=?,color=?,price=?,image_url=?,active=?,"
-                    + "featured=? WHERE product_id=?";
+                    + "featured=? WHERE product_id=? AND xmin::text::bigint=?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 bindProduct(statement, product);
                 statement.setLong(9, product.getProductId());
+                statement.setLong(10, expectedVersion);
+                if (statement.executeUpdate() != 1) {
+                    throw new ValidationException("Sản phẩm vừa được sửa ở nơi khác sau khi bạn mở trang nên thay đổi của bạn "
+                            + "chưa được lưu. Những gì bạn nhập vẫn được giữ: bấm Lưu lần nữa để ghi đè, hoặc tải lại trang "
+                            + "để xem bản mới nhất.", "version");
+                }
+            }
+            return null;
+        });
+    }
+
+    /** Ngừng bán một sản phẩm. Chỉ đổi cột active, để không ghi đè giá hay tên mà người khác vừa sửa. */
+    public void deactivate(long productId) {
+        withConnection("deactivate product", connection -> {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE products SET active=FALSE WHERE product_id=?")) {
+                statement.setLong(1, productId);
                 if (statement.executeUpdate() != 1) throw new EntityNotFoundException("Không tìm thấy sản phẩm.");
             }
             return null;
@@ -313,6 +343,7 @@ public final class ProductRepository extends JdbcSupport {
                 row.getString("description"), row.getString("color"), row.getBigDecimal("price"),
                 row.getString("image_url"));
         product.assignId(row.getLong("product_id"));
+        product.assignVersion(row.getLong("product_version"));
         product.changeFeatured(row.getBoolean("featured"));
         if (!row.getBoolean("product_active")) product.deactivate();
         return product;

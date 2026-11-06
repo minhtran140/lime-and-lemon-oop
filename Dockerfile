@@ -4,7 +4,7 @@ WORKDIR /workspace
 COPY pom.xml ./pom.xml
 COPY src ./src
 # Inside Docker the database host is the compose service "db".
-RUN sed -i 's#localhost:5432#db:5432#' src/main/resources/db.properties src/main/webapp/META-INF/context.xml
+RUN sed -i 's#localhost:5432#db:5432#' src/main/webapp/META-INF/context.xml
 RUN mvn -B -ntp package
 
 FROM postgres:17@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3 AS postgres-init

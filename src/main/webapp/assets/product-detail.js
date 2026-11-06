@@ -2,7 +2,7 @@
     const root = document.querySelector('[data-pdp]');
     if (!root) return;
 
-    // Chỉ một nơi giữ trạng thái: radio sizeId đang được chọn; nhãn size, tồn kho, số lượng và URL đều được tính lại từ nó.
+    // Chỉ một nơi giữ trạng thái: radio sizeId đang được chọn; nhãn size, tồn kho và số lượng đều được tính lại từ nó.
     const sizes = [...root.querySelectorAll('.pdp-size input')];
     const sizeLabel = root.querySelector('[data-size-label]');
     const sizeError = root.querySelector('#pdp-size-error');
@@ -50,19 +50,7 @@
         syncSteps();
     };
 
-    // Dùng replaceState chứ không phải pushState: chọn size không phải là một lần xem trang mới, nên bấm Back một lần vẫn rời khỏi sản phẩm.
-    const syncUrl = () => {
-        const url = new URL(location.href);
-        const selected = selectedSize();
-        if (selected) url.searchParams.set('size', selected.dataset.size);
-        else url.searchParams.delete('size');
-        if (url.href !== location.href) history.replaceState(null, '', url);
-    };
-
-    sizes.forEach((input) => input.addEventListener('change', () => {
-        render();
-        syncUrl();
-    }));
+    sizes.forEach((input) => input.addEventListener('change', render));
 
     if (quantity) {
         quantity.addEventListener('input', syncSteps);

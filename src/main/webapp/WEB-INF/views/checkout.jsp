@@ -33,13 +33,15 @@
             </c:if>
             <div class="checkout-grid">
                 <form class="form-card checkout-form" method="post" action="${pageContext.request.contextPath}/checkout">
+                    <%-- quoteId: khóa phía server của giá/số lượng đang hiển thị; giá đổi thì server báo lỗi và hiển thị lại. --%>
+                    <input type="hidden" name="quoteId" value="<c:out value='${quoteId}'/>">
                     <h2>Thông tin nhận hàng</h2>
                     <p class="form-required-note">Tất cả các mục đều bắt buộc.</p>
-                    <label>Người nhận<input id="recipientName" name="recipientName" required pattern=".*\S.*" title="Vui lòng nhập tên người nhận" maxlength="120" autocomplete="name" value="<c:out value='${recipientName}'/>"<c:if test="${errorField eq 'recipientName'}"> aria-invalid="true" aria-describedby="recipientName-error"</c:if>></label>
+                    <label>Người nhận<input id="recipientName" name="recipientName" required pattern=".*\S.*" title="Vui lòng nhập tên người nhận" maxlength="120" autocomplete="name" value="<c:out value='${param.recipientName}'/>"<c:if test="${errorField eq 'recipientName'}"> aria-invalid="true" aria-describedby="recipientName-error"</c:if>></label>
                     <c:if test="${errorField eq 'recipientName'}"><p class="field-error" id="recipientName-error"><c:out value="${checkoutError}"/></p></c:if>
-                    <label>Số điện thoại<input id="phone" type="tel" name="phone" required pattern="[\s.\-]*(\+84|0)([\s.\-]*\d){9}[\s.\-]*" title="Số điện thoại gồm 10 chữ số, bắt đầu bằng 0 hoặc +84" maxlength="30" autocomplete="tel" inputmode="tel" value="<c:out value='${phone}'/>"<c:if test="${errorField eq 'phone'}"> aria-invalid="true" aria-describedby="phone-error"</c:if>></label>
+                    <label>Số điện thoại<input id="phone" type="tel" name="phone" required pattern="[\s.\-]*(\+84|0)([\s.\-]*\d){9}[\s.\-]*" title="Số điện thoại gồm 10 chữ số, bắt đầu bằng 0 hoặc +84" maxlength="30" autocomplete="tel" inputmode="tel" value="<c:out value='${param.phone}'/>"<c:if test="${errorField eq 'phone'}"> aria-invalid="true" aria-describedby="phone-error"</c:if>></label>
                     <c:if test="${errorField eq 'phone'}"><p class="field-error" id="phone-error"><c:out value="${checkoutError}"/></p></c:if>
-                    <label>Địa chỉ<textarea id="address" name="address" required maxlength="500" title="Vui lòng nhập địa chỉ" autocomplete="street-address"<c:if test="${errorField eq 'address'}"> aria-invalid="true" aria-describedby="address-error"</c:if>><c:out value="${address}"/></textarea></label>
+                    <label>Địa chỉ<textarea id="address" name="address" required maxlength="500" title="Vui lòng nhập địa chỉ" autocomplete="street-address"<c:if test="${errorField eq 'address'}"> aria-invalid="true" aria-describedby="address-error"</c:if>><c:out value="${param.address}"/></textarea></label>
                     <c:if test="${errorField eq 'address'}"><p class="field-error" id="address-error"><c:out value="${checkoutError}"/></p></c:if>
                     <p class="muted">Thanh toán khi nhận hàng (COD).</p>
                     <button class="button-primary" type="submit" data-busy-label="Đang đặt hàng…">Đặt hàng</button>

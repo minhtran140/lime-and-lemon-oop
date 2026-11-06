@@ -63,7 +63,6 @@ public final class ProductService {
 
     // Phía quản trị
 
-    public List<Category> allCategories() { return categories.findAll(); }
     public List<CategoryRow> categoryRows() { return categories.findAllWithProductCount(); }
 
     /** Danh sách sản phẩm của admin, có thể thu hẹp theo tên (bỏ qua dấu và hoa thường) và danh mục. */
@@ -100,7 +99,8 @@ public final class ProductService {
     }
 
     public Product updateProduct(long productId, long categoryId, String name, String description, String color,
-                                 BigDecimal price, String imageUrl, boolean active, boolean featured) {
+                                 BigDecimal price, String imageUrl, boolean active, boolean featured,
+                                 long expectedVersion) {
         Product product = findProduct(productId);
         product.changeCategory(findCategory(categoryId));
         product.rename(name);
@@ -110,15 +110,16 @@ public final class ProductService {
         product.changeImageUrl(imageUrl);
         product.changeFeatured(featured);
         if (active) product.activate(); else product.deactivate();
-        products.update(product);
+        // Phiên bản là của form admin đã mở, không phải của bản vừa đọc ở trên: so sánh với form mới phát hiện được sửa chồng.
+        products.update(product, expectedVersion);
         return product;
     }
 
     /** Tắt một sản phẩm: người mua không còn thấy nó, các đơn cũ vẫn giữ nó. */
     public Product deactivateProduct(long productId) {
         Product product = findProduct(productId);
+        products.deactivate(productId);
         product.deactivate();
-        products.update(product);
         return product;
     }
 
