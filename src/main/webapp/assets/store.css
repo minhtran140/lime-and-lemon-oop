@@ -930,6 +930,7 @@ main .notice {
 .clear-filters a,
 .order-link {
     display: inline-flex;
+    min-width: 44px;
     min-height: 44px;
     align-items: center;
 }

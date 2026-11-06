@@ -57,7 +57,7 @@
                         <c:otherwise><c:set var="canMove" value="true"/></c:otherwise>
                     </c:choose></c:if></c:forEach>
                     <tr class="data-row" id="order-row-${order.orderId}">
-                        <td data-label="Mã đơn" class="admin-half"><a href="${ctx}/admin/order/detail?id=${order.orderId}">#<c:out value="${order.orderId}"/></a></td>
+                        <td data-label="Mã đơn" class="admin-half"><a class="order-link" href="${ctx}/admin/order/detail?id=${order.orderId}">#<c:out value="${order.orderId}"/></a></td>
                         <td data-label="Ngày đặt" class="admin-half"><c:choose><c:when test="${empty order.createdAt}">—</c:when><c:otherwise>${order.createdAt.format(dateTimeFormat)}</c:otherwise></c:choose></td>
                         <td data-label="Người nhận" class="admin-half"><c:out value="${order.shippingAddress.recipientName}"/></td>
                         <td class="admin-numeric admin-stock admin-half" data-label="Tổng"><app:money amount="${order.total}"/></td>

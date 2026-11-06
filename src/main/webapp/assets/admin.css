@@ -520,6 +520,11 @@
     margin-block: -8px;
 }
 
+.admin-table-orders .order-link {
+    margin-block: -12px;
+    position: relative;
+}
+
 .admin-stock-detail {
     color: var(--color-text-muted);
 }
