@@ -43,10 +43,10 @@ Lỗi này thường do volume cũ. Postgres chỉ chạy `schema.sql` khi volum
 docker compose -p lime-and-lemon logs --tail 100 web
 ```
 
-Nếu không cần giữ dữ liệu trong volume, chạy `docker compose -p lime-and-lemon down -v` rồi `up --build -d --wait` để nạp lại (`down -v` xóa toàn bộ dữ liệu demo). Nếu cần giữ, chạy các migration trong `src/main/resources/db/migrations/`. File nào cũng chạy lại được nhiều lần. `20261027-product-webp.sql` đổi 13 ảnh PNG demo sang WebP và không đụng tới sản phẩm, đơn hàng hay ảnh tùy chỉnh. `20261031-unaccent-search.sql` bật extension `unaccent` để tìm "ao" ra "áo".
+Nếu không cần giữ dữ liệu trong volume, chạy `docker compose -p lime-and-lemon down -v` rồi `up --build -d --wait` để nạp lại (`down -v` xóa toàn bộ dữ liệu demo). Nếu cần giữ, chạy các migration trong `src/main/resources/db/migrations/`. File nào cũng chạy lại được nhiều lần. `20261027-product-webp.sql` đổi 13 ảnh PNG demo sang WebP và không đụng tới sản phẩm, đơn hàng hay ảnh tùy chỉnh. `20261031-unaccent-search.sql` bật extension `unaccent` để tìm "ao" ra "áo". `20261110-product-covers-rollback.sql` trả `image_url` từ thư mục `covers/` không tồn tại về ảnh có thật trên đĩa. `20261110-drop-demo-note.sql` xóa câu "Sản phẩm demo…" ở cuối mô tả sản phẩm.
 
 ```powershell
-foreach ($file in 'migrations/20261027-product-webp.sql', 'migrations/20261031-unaccent-search.sql') {
+foreach ($file in 'migrations/20261027-product-webp.sql', 'migrations/20261031-unaccent-search.sql', 'migrations/20261110-product-covers-rollback.sql', 'migrations/20261110-drop-demo-note.sql') {
     Get-Content -Raw "src/main/resources/db/$file" | docker compose -p lime-and-lemon exec -T db psql -U postgres -d lime_and_lemon -v ON_ERROR_STOP=1
 }
 ```
