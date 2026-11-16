@@ -24,7 +24,7 @@
                 <p>Những kiểu dáng quen thuộc, những cách phối mới. Chọn trang phục cho nhịp sống của bạn.</p>
                 <div class="home-actions"><a class="button" href="${pageContext.request.contextPath}/products">Khám phá sản phẩm <span aria-hidden="true">↗</span></a></div>
             </div>
-            <img class="home-hero-image" src="${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261007.webp" srcset="${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261007-small.webp 1000w, ${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261007.webp 2000w" sizes="(max-width: 1024px) 100vw, min(54vw, 700px)" width="2000" height="1250" alt="Sơ mi linen màu kem và quần sage treo trên giá gỗ, cạnh đôi giày bệt màu be trong sân vườn ngập nắng" loading="eager" fetchpriority="high" decoding="async">
+            <img class="home-hero-image" src="${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261116.webp" srcset="${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261116-small.webp 1000w, ${pageContext.request.contextPath}/assets/home/hero-fashion-editorial-20261116.webp 2000w" sizes="(max-width: 1024px) 100vw, min(54vw, 700px)" width="2000" height="1250" alt="Sơ mi linen màu kem và quần sage treo trên giá gỗ, cạnh đôi giày bệt màu be trong sân vườn ngập nắng" loading="eager" fetchpriority="high" decoding="async">
         </div>
     </section>
 
